@@ -1,24 +1,38 @@
 package com.rdba.flat_manager.entity;
 
+import java.util.List;
+
 public class User {
 
+    private Long id;
     private String username;
     private String password;
     private String firstName;
     private String lastName;
     private String email;
     private String phoneNumber;
+    private List<Flat> flats;
 
     public User() {
     }
 
-    public User(String username, String password, String firstName, String lastName, String email, String phoneNumber) {
+    public User(Long id, String username, String password, String firstName, String lastName, String email, String phoneNumber, List<Flat> flats) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.flats = flats;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUsername() {
@@ -68,5 +82,12 @@ public class User {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
-}
 
+    public List<Flat> getFlats() {
+        return flats;
+    }
+
+    public void setFlats(List<Flat> flats) {
+        this.flats = flats;
+    }
+}

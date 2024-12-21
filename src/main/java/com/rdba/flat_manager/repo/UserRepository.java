@@ -26,4 +26,8 @@ public class UserRepository {
                 .filter(u -> u.getUsername().equals(username) && u.getPassword().equals(password))
                 .findFirst();
     }
+
+    public Optional<User> findById(Long id) {
+        return users.stream().filter(u -> u.getId().equals(id)).findFirst();
+    }
 }
