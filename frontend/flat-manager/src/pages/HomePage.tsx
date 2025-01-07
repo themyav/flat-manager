@@ -84,8 +84,8 @@ function HomePage() {
                     </TableHead>
                     <TableBody>
                         {flats.map((flat) => (
-                            <TableRow key={flat.flat_id}>
-                                <TableCell>{flat.flat_id}</TableCell>
+                            <TableRow key={flat.id}>
+                                <TableCell>{flat.id}</TableCell>
                                 <TableCell>{flat.name}</TableCell>
                                 <TableCell>{flat.address}</TableCell>
                             </TableRow>

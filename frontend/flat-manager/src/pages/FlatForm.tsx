@@ -3,15 +3,26 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import { addFlat } from './api.ts';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function FlatForm() {
     const [flatData, setFlatData] = useState({
         name: '',
         address: '',
+        user: null
     });
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const storedUser = JSON.parse(localStorage.getItem('user'));
+        if (storedUser) {
+            setFlatData(prev => ({
+                ...prev,
+                user: { id: storedUser.id }
+            }));
+        }
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -42,6 +53,7 @@ function FlatForm() {
                 value={flatData.name}
                 onChange={handleChange}
                 required
+                style={{ marginBottom: '20px' }}
             />
             <TextField
                 label="Адрес"
@@ -51,6 +63,7 @@ function FlatForm() {
                 value={flatData.address}
                 onChange={handleChange}
                 required
+                style={{ marginBottom: '20px' }}
             />
             <Button type="submit" variant="contained" color="primary" style={{ marginRight: '10px' }}>
                 Добавить
