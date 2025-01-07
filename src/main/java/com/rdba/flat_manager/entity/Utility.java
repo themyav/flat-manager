@@ -5,27 +5,26 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.time.ZonedDateTime;
 
 @Entity
-@Table(name = "flat_user")
+@Table(name = "utility")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class Utility {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column
-    private String username;
+    private String name;
     @Column
-    private String password;
+    private Integer price;
     @Column
-    private String firstName;
-    @Column
-    private String lastName;
-    @Column
-    private String email;
-    @Column
-    private String phoneNumber;
+    private ZonedDateTime date;
+
+    @ManyToOne
+    @JoinColumn(name = "flat_id")
+    private Flat flat;
+
 }
