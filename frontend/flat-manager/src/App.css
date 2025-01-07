@@ -1,6 +1,6 @@
 .App {
     text-align: center;
-    width: 70%;
+    width: 60%;
     margin: auto;
 }
 
@@ -41,4 +41,7 @@
 
 .App-form {
     width: 70%;
+}
+.inputForm-TextField {
+    margin-bottom: 20px;
 }
