@@ -1,10 +1,14 @@
 package com.rdba.flat_manager.controller;
 
+import com.rdba.flat_manager.dto.UserDTO;
+import com.rdba.flat_manager.entity.Flat;
 import com.rdba.flat_manager.entity.User;
 import com.rdba.flat_manager.service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -17,16 +21,18 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PutMapping("/register")
+    @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public User registerUser(@RequestBody User user) {
         return userService.createUser(user);
     }
 
-    @PutMapping("/login")
-    public String loginUser(@RequestParam String username, @RequestParam String password) {
-        Optional<User> user = userService.loginUser(username, password);
-        return user.isPresent() ? "Login successful" : "Invalid credentials";
+    @PostMapping("/login")
+    public ResponseEntity<String> loginUser(@RequestBody UserDTO userDTO) {
+        Optional<User> user = userService.loginUser(userDTO.getUsername(), userDTO.getPassword());
+        if (user.isPresent()) {
+            return ResponseEntity.ok("Login successful");
+        } else return ResponseEntity.badRequest().body("Invalid credentials");
     }
 
     @GetMapping("/{username}")
@@ -38,4 +44,11 @@ public class UserController {
     public Optional<User> getUserById(@PathVariable Long id) {
         return userService.getUserById(id);
     }
+
+    @GetMapping("/flats/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Flat> getFlatsByUserId(@PathVariable Long id) {
+        return userService.getFlatsByUserId(id);
+    }
+
 }

@@ -1,18 +1,23 @@
 package com.rdba.flat_manager.service;
 
+import com.rdba.flat_manager.entity.Flat;
 import com.rdba.flat_manager.entity.User;
 import com.rdba.flat_manager.repo.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final FlatService flatService;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, FlatService flatService) {
         this.userRepository = userRepository;
+        this.flatService = flatService;
     }
 
     public User createUser(User user) {
@@ -30,4 +35,9 @@ public class UserService {
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
+
+    public List<Flat> getFlatsByUserId(Long id) {
+        return flatService.getAllFlats().stream().filter(flat -> flat.getUser().getId().equals(id)).toList();
+    }
+
 }
