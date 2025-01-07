@@ -1,9 +1,9 @@
-// LoginForm.tsx
 import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import {useState} from "react";
-import {loginUser} from './api.ts'; // Import loginUser
+import { useState } from 'react';
+import { loginUser } from './api.ts';
+import { useNavigate } from 'react-router-dom';
 
 function LoginForm() {
     const [loginData, setLoginData] = useState({
@@ -11,42 +11,38 @@ function LoginForm() {
         password: '',
     });
 
-    const [error, setError] = useState(''); // Add error state
+    const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-
+    const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        setError(''); // Clear previous errors
-        setLoading(true); // Set loading to true before the request
+        setError('');
+        setLoading(true);
 
         try {
-            const response = await loginUser(loginData); // Use the imported function
+            const response = await loginUser(loginData);
             if (response.status === 200) {
                 console.log('Login successful!');
-                // You might want to redirect the user here or update the app state
+                navigate('/home', { state: { user: loginData } });
             }
-            //No need for else, as error is handled in catch
         } catch (error) {
-            setError('Неверные логин или пароль'); // Set error message
-            console.error("Login Error:", error);
-
+            setError('Неверные логин или пароль');
+            console.error('Login Error:', error);
         } finally {
-            setLoading(false); // Set loading to false after the request completes (success or error)
+            setLoading(false);
         }
     };
 
     const handleChange = (e) => {
-        const {name, value} = e.target;
-        setLoginData({...loginData, [name]: value});
+        const { name, value } = e.target;
+        setLoginData({ ...loginData, [name]: value });
     };
 
     return (
         <form onSubmit={handleLogin}>
-            {error && <div
-                style={{color: 'red', textAlign: 'center', marginBottom: '10px'}}>{error}</div>} {/* Display error */}
-            {loading &&  // Conditionally render based on boolean loading state
-                <div style={{color: 'gray', textAlign: 'center', marginBottom: '10px'}}>Подождите...</div>}
+            {error && <div style={{ color: 'red', textAlign: 'center', marginBottom: '10px' }}>{error}</div>}
+            {loading && <div style={{ color: 'gray', textAlign: 'center', marginBottom: '10px' }}>Подождите...</div>}
             <TextField
                 label="Логин"
                 variant="outlined"

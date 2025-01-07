@@ -79,8 +79,27 @@ function SignupForm() {
         }
     };
 
+    const formStyle = {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '10px',
+        padding: '20px',
+        paddingBottom: '5px',
+        maxWidth: '400px',
+        margin: '0px auto'
+    };
+
+    const passwordFieldsMargin = {
+        margin: '10px 0'
+    };
+
+    const passwordFieldsMargin2 = {
+        margin: '10px 0'
+    };
+
+
     return (
-        <form onSubmit={handleSignup}>
+        <form onSubmit={handleSignup} style={formStyle}>
             {error && <div style={{color: 'red', textAlign: 'center', marginBottom: '10px'}}>{error}</div>}
             {successMessage &&
                 <div style={{color: 'green', textAlign: 'center', marginBottom: '10px'}}>{successMessage}</div>}
@@ -115,7 +134,7 @@ function SignupForm() {
                 required
                 placeholder="+7 XXX XXX XX XX"
             />
-            <div style={{margin: '20px 0'}}/>
+            <div style={passwordFieldsMargin2}/>
             <TextField
                 label="Имя"
                 variant="outlined"
@@ -133,7 +152,7 @@ function SignupForm() {
                 onChange={handleChange}
             />
 
-            <div style={{margin: '20px 0'}}/>
+            <div style={passwordFieldsMargin}/>
             <TextField
                 label="Пароль"
                 variant="outlined"
@@ -154,10 +173,11 @@ function SignupForm() {
                 onChange={handleChange}
                 required
             />
-            <Button type="submit" variant="contained" color="primary" disabled={loading}> {/* Disable button while loading */}
+            <Button type="submit" variant="contained" color="primary" disabled={loading}
+                    style={{ marginBottom: '0px' }}
+            >
                 Зарегистрироваться
             </Button>
-
         </form>
     );
 }
