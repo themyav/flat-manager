@@ -12,19 +12,36 @@ import {
     TableRow,
     Paper
 } from '@mui/material';
-import { updateFlat, getFlatUtilities } from './api.ts';
+import { updateFlat, getFlatUtilities, deleteUtility, getFlat } from './api.ts';
+import DeleteIcon from '@mui/icons-material/Delete';
+import InfoIcon from '@mui/icons-material/Info';
 
 function FlatPage() {
     const navigate = useNavigate();
     const location = useLocation();
     const { id } = useParams();
-    const [flat, setFlat] = useState(location.state?.flat || null);
+    const [flat, setFlat] = useState(location.state?.flat);
     const [utilities, setUtilities] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
     const [editedFlat, setEditedFlat] = useState({
-        name: flat?.name || '',
-        address: flat?.address || ''
+        name: '',
+        address: ''
     });
+
+    const fetchFlatData = useCallback(async () => {
+        if (!id) return;
+
+        try {
+            const response = await getFlat(id);
+            setFlat(response.data);
+            setEditedFlat({
+                name: response.data.name,
+                address: response.data.address
+            });
+        } catch (error) {
+            console.error('Error fetching flat:', error);
+        }
+    }, [id]);
 
     const fetchUtilities = useCallback(async () => {
         if (!id) return;
@@ -38,10 +55,18 @@ function FlatPage() {
     }, [id]);
 
     useEffect(() => {
+        if (!flat && id) {
+            fetchFlatData();
+        }
         fetchUtilities();
-    }, [fetchUtilities]);
+    }, [fetchFlatData, fetchUtilities, flat, id]);
 
-    // Update editedFlat when flat changes
+    useEffect(() => {
+        if (location.state?.needRefresh) {
+            fetchUtilities();
+        }
+    }, [location.state, fetchUtilities]);
+
     useEffect(() => {
         if (flat) {
             setEditedFlat({
@@ -82,6 +107,30 @@ function FlatPage() {
 
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleDateString('ru-RU');
+    };
+
+    const handleAddUtility = () => {
+        localStorage.setItem('flatId', flat.id);
+        navigate(`/add-utility/${flat.id}`);
+    };
+
+    const handleBack = () => {
+        localStorage.removeItem('flatId');
+        navigate('/home');
+    };
+
+    const handleUtilityDetails = (utility) => {
+        localStorage.setItem('flatId', flat.id);
+        navigate(`/utility/${utility.id}`, { state: { utility } });
+    };
+
+    const handleUtilityDelete = async (utilityId) => {
+        try {
+            await deleteUtility(utilityId);
+            fetchUtilities();
+        } catch (error) {
+            console.error('Error deleting utility:', error);
+        }
     };
 
     if (!flat) {
@@ -142,6 +191,14 @@ function FlatPage() {
             )}
 
             <h2>Коммунальные платежи</h2>
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={handleAddUtility}
+                style={{ marginBottom: '10px' }}
+            >
+                Добавить коммунальный платеж
+            </Button>
             <TableContainer component={Paper}>
                 <Table>
                     <TableHead>
@@ -150,6 +207,7 @@ function FlatPage() {
                             <TableCell>Название</TableCell>
                             <TableCell>Цена</TableCell>
                             <TableCell>Дата</TableCell>
+                            <TableCell>Действия</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -159,6 +217,27 @@ function FlatPage() {
                                 <TableCell>{utility.name}</TableCell>
                                 <TableCell>{utility.price}</TableCell>
                                 <TableCell>{formatDate(utility.date)}</TableCell>
+                                <TableCell>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        size="small"
+                                        startIcon={<InfoIcon />}
+                                        onClick={() => handleUtilityDetails(utility)}
+                                        style={{ marginRight: '10px' }}
+                                    >
+                                        Подробнее
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="error"
+                                        size="small"
+                                        startIcon={<DeleteIcon />}
+                                        onClick={() => handleUtilityDelete(utility.id)}
+                                    >
+                                        Удалить
+                                    </Button>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
@@ -168,7 +247,7 @@ function FlatPage() {
             <Button
                 variant="contained"
                 color="secondary"
-                onClick={() => navigate('/home')}
+                onClick={handleBack}
                 style={{ marginTop: '20px' }}
             >
                 Назад

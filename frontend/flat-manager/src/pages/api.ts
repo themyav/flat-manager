@@ -65,3 +65,38 @@ export const getFlatUtilities = async (flatId) => {
         throw error;
     }
 };
+
+export const addUtility = async (utilityData) => {
+    try {
+        return await axios.post(`${BASE_URL}/utilities`, utilityData);
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getUtility = async (utilityId) => {
+    try {
+        return await axios.get(`${BASE_URL}/utilities/${utilityId}`);
+    } catch (error) {
+        throw error;
+    }
+};
+export const updateUtility = async (utilityId, utilityData) => {
+    try {
+        return await axios.put(`${BASE_URL}/utilities/${utilityId}`, utilityData);
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const deleteUtility = async (utilityId) => {
+    try {
+        return await axios.delete(`${BASE_URL}/utilities/${utilityId}`);
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getFlat = async (id: string) => {
+    return axios.get(`${BASE_URL}/flats/${id}`);
+};

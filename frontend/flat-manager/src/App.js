@@ -1,10 +1,13 @@
+// App.js
 import './App.css';
 import * as React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import StartPage from './pages/StartPage.tsx';
 import HomePage from './pages/HomePage.tsx';
 import FlatForm from './pages/FlatForm.tsx';
-import FlatPage from './pages/FlatPage.tsx'; // Import the new FlatPage component
+import FlatPage from './pages/FlatPage.tsx';
+import UtilityForm from './pages/UtilityForm.tsx';
+import UtilityPage from './pages/UtilityPage.tsx';
 
 function App() {
     return (
@@ -15,7 +18,9 @@ function App() {
                     <Route path="/login" element={<StartPage />} />
                     <Route path="/home" element={<HomePage />} />
                     <Route path="/add-flat" element={<FlatForm />} />
-                    <Route path="/flat/:id" element={<FlatPage />} /> {/* Add this route for FlatPage */}
+                    <Route path="/flat/:id" element={<FlatPage />} />
+                    <Route path="/add-utility/:id" element={<UtilityForm />} />
+                    <Route path="/utility/:id" element={<UtilityPage />} />
                     <Route path="*" element={<Navigate to="/" />} />
                 </Routes>
             </div>
