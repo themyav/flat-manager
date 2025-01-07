@@ -16,11 +16,9 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
-    private final FlatService flatService;
 
-    public UserController(UserService userService, FlatService flatService) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.flatService = flatService;
     }
 
     @PostMapping("/register")
@@ -48,7 +46,7 @@ public class UserController {
     @GetMapping("/flats/{id}")
     @ResponseStatus(HttpStatus.OK)
     public List<Flat> getFlatsByUserId(@PathVariable Long id) {
-        return flatService.getAllFlats().stream().filter(flat -> flat.getUser().getId().equals(id)).toList();
+        return userService.getFlatsByUserId(id);
     }
 
 }

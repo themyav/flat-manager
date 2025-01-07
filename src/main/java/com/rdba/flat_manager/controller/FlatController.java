@@ -34,6 +34,12 @@ public class FlatController {
         return flatService.getFlatById(id);
     }
 
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Flat getFlatById(@PathVariable Long id, @RequestBody Flat flat) {
+        return flatService.updateFlat(id, flat);
+    }
+
     @GetMapping("/utilities/{id}")
     @ResponseStatus(HttpStatus.OK)
     public List<Utility> getUtilitiesByFlatId(@PathVariable Long id) {
