@@ -1,9 +1,11 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { getUser, getUserFlats } from './api.ts';
-import { useEffect, useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import {useNavigate, useLocation} from 'react-router-dom';
+import {getUser, getUserFlats, deleteFlat} from './api.ts';
+import {useEffect, useState} from 'react';
+import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper} from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import InfoIcon from '@mui/icons-material/Info';
 
 function HomePage() {
     const navigate = useNavigate();
@@ -43,6 +45,22 @@ function HomePage() {
         }
     };
 
+    const handleDelete = async (flatId) => {
+        try {
+            await deleteFlat(flatId);
+            // Refresh the flats list
+            if (user) {
+                fetchUserFlats(user.id);
+            }
+        } catch (error) {
+            console.error('Error deleting flat:', error);
+        }
+    };
+
+    const handleDetails = (flat) => {
+        navigate(`/flat/${flat.id}`, {state: {flat}});
+    };
+
     const handleLogout = () => {
         // Clear user from localStorage on logout
         localStorage.removeItem('user');
@@ -70,7 +88,7 @@ function HomePage() {
             <Button variant="contained" color="primary" onClick={handleLogout}>
                 Выйти
             </Button>
-            <Button variant="contained" color="primary" onClick={handleAddFlat} style={{ margin: '10px' }}>
+            <Button variant="contained" color="primary" onClick={handleAddFlat} style={{margin: '10px'}}>
                 Добавить квартиру
             </Button>
             <TableContainer component={Paper}>
@@ -80,6 +98,7 @@ function HomePage() {
                             <TableCell>ID</TableCell>
                             <TableCell>Название</TableCell>
                             <TableCell>Адрес</TableCell>
+                            <TableCell>Действия</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -88,6 +107,27 @@ function HomePage() {
                                 <TableCell>{flat.id}</TableCell>
                                 <TableCell>{flat.name}</TableCell>
                                 <TableCell>{flat.address}</TableCell>
+                                <TableCell>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        size="small"
+                                        startIcon={<InfoIcon/>}
+                                        onClick={() => handleDetails(flat)}
+                                        style={{marginRight: '10px'}}
+                                    >
+                                        Подробнее
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="error"
+                                        size="small"
+                                        startIcon={<DeleteIcon/>}
+                                        onClick={() => handleDelete(flat.id)}
+                                    >
+                                        Удалить
+                                    </Button>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

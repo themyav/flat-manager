@@ -41,3 +41,27 @@ export const addFlat = async (flatData) => {
         throw error;
     }
 };
+
+export const deleteFlat = async (flatId) => {
+    try {
+        return await axios.delete(`${BASE_URL}/flats/${flatId}`);
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const updateFlat = async (flatId, flatData) => {
+    try {
+        return await axios.put(`${BASE_URL}/flats/${flatId}`, flatData);
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getFlatUtilities = async (flatId) => {
+    try {
+        return await axios.get(`${BASE_URL}/flats/utilities/${flatId}`);
+    } catch (error) {
+        throw error;
+    }
+};
