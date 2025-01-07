@@ -12,11 +12,18 @@ function HomePage() {
     const [flats, setFlats] = useState([]);
 
     useEffect(() => {
-        if (location.state && location.state.user) {
+        // Check if user is already stored in localStorage
+        const storedUser = JSON.parse(localStorage.getItem('user'));
+        if (storedUser) {
+            setUser(storedUser);
+            fetchUserFlats(storedUser.id);
+        } else if (location.state && location.state.user) {
             const fetchUserDetails = async () => {
                 try {
                     const response = await getUser(location.state.user.username);
                     setUser(response.data);
+                    // Store user in localStorage
+                    localStorage.setItem('user', JSON.stringify(response.data));
                     const flatsResponse = await getUserFlats(response.data.id);
                     setFlats(flatsResponse.data);
                 } catch (error) {
@@ -27,7 +34,18 @@ function HomePage() {
         }
     }, [location]);
 
+    const fetchUserFlats = async (userId) => {
+        try {
+            const flatsResponse = await getUserFlats(userId);
+            setFlats(flatsResponse.data);
+        } catch (error) {
+            console.error('Error fetching user flats:', error);
+        }
+    };
+
     const handleLogout = () => {
+        // Clear user from localStorage on logout
+        localStorage.removeItem('user');
         navigate('/login');
     };
 

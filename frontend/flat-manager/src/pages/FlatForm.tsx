@@ -3,7 +3,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import { addFlat } from './api.ts';
-import {useState} from "react";
+import { useState } from "react";
 
 function FlatForm() {
     const [flatData, setFlatData] = useState({
@@ -28,6 +28,10 @@ function FlatForm() {
         setFlatData({ ...flatData, [name]: value });
     };
 
+    const handleBack = () => {
+        navigate('/home');
+    };
+
     return (
         <form onSubmit={handleSubmit}>
             <TextField
@@ -48,8 +52,11 @@ function FlatForm() {
                 onChange={handleChange}
                 required
             />
-            <Button type="submit" variant="contained" color="primary">
+            <Button type="submit" variant="contained" color="primary" style={{ marginRight: '10px' }}>
                 Добавить
+            </Button>
+            <Button variant="contained" color="secondary" onClick={handleBack}>
+                Назад
             </Button>
         </form>
     );
