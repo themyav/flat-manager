@@ -3,9 +3,9 @@ package com.rdba.flat_manager.controller;
 import com.rdba.flat_manager.dto.UserDTO;
 import com.rdba.flat_manager.entity.Flat;
 import com.rdba.flat_manager.entity.User;
-import com.rdba.flat_manager.service.FlatService;
 import com.rdba.flat_manager.service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,9 +28,11 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String loginUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<String> loginUser(@RequestBody UserDTO userDTO) {
         Optional<User> user = userService.loginUser(userDTO.getUsername(), userDTO.getPassword());
-        return user.isPresent() ? "Login successful" : "Invalid credentials";
+        if (user.isPresent()) {
+            return ResponseEntity.ok("Login successful");
+        } else return ResponseEntity.badRequest().body("Invalid credentials");
     }
 
     @GetMapping("/{username}")
