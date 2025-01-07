@@ -1,10 +1,13 @@
 package com.rdba.flat_manager.controller;
 
+import com.rdba.flat_manager.entity.Flat;
 import com.rdba.flat_manager.entity.User;
+import com.rdba.flat_manager.entity.Utility;
 import com.rdba.flat_manager.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -38,4 +41,11 @@ public class UserController {
     public Optional<User> getUserById(@PathVariable Long id) {
         return userService.getUserById(id);
     }
+
+    @GetMapping("/flats/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Flat> getFlatsByUserId(@PathVariable Long id) {
+        return userService.getFlatByUserId(id);
+    }
+
 }
