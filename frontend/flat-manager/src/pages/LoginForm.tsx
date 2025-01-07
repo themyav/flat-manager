@@ -22,19 +22,11 @@ function LoginForm() {
 
         try {
             const response = await loginUser(loginData);
-            if (response.status === 200 || (
-                loginData.username === '1' && loginData.password === '1'
-            )) {
+            if (response.status === 200) {
                 console.log('Login successful!');
                 navigate('/home', { state: { user: loginData } });
             }
         } catch (error) {
-            if (
-                loginData.username === '1' && loginData.password === '1'
-            ) {
-                console.log('Login successful!');
-                navigate('/home', { state: { user: loginData } });
-            }
             setError('Неверные логин или пароль');
             console.error('Login Error:', error);
         } finally {

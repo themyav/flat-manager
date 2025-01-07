@@ -3,7 +3,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import { addFlat } from './api.ts';
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
 function FlatForm() {
     const [flatData, setFlatData] = useState({
@@ -11,6 +11,10 @@ function FlatForm() {
         address: '',
         user: null
     });
+
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState(null);
+    const [messageType, setMessageType] = useState(null);
 
     const navigate = useNavigate();
 
@@ -26,11 +30,20 @@ function FlatForm() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setMessage(null);
+        setMessageType(null);
+        setLoading(true);
+
         try {
             await addFlat(flatData);
-            navigate('/home');
+            setMessage('Квартира успешно добавлена!');
+            setMessageType('success');
         } catch (error) {
+            setMessage('Ошибка при добавлении квартиры.');
+            setMessageType('error');
             console.error('Error adding flat:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -44,34 +57,49 @@ function FlatForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <TextField
-                label="Название"
-                variant="outlined"
-                fullWidth
-                name="name"
-                value={flatData.name}
-                onChange={handleChange}
-                required
-                style={{ marginBottom: '20px' }}
-            />
-            <TextField
-                label="Адрес"
-                variant="outlined"
-                fullWidth
-                name="address"
-                value={flatData.address}
-                onChange={handleChange}
-                required
-                style={{ marginBottom: '20px' }}
-            />
-            <Button type="submit" variant="contained" color="primary" style={{ marginRight: '10px' }}>
-                Добавить
-            </Button>
-            <Button variant="contained" color="secondary" onClick={handleBack}>
-                Назад
-            </Button>
-        </form>
+        <div style={{ padding: '20px', maxWidth: '400px', margin: '0 auto' }}>
+            <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Добавление квартиры</h2>
+            {loading && <div style={{ color: 'gray', textAlign: 'center', marginBottom: '10px' }}>Загрузка...</div>}
+            {message && (
+                <div
+                    style={{
+                        color: messageType === 'success' ? 'green' : 'red',
+                        textAlign: 'center',
+                        marginBottom: '10px'
+                    }}
+                >
+                    {message}
+                </div>
+            )}
+            <form onSubmit={handleSubmit}>
+                <TextField
+                    label="Название"
+                    variant="outlined"
+                    fullWidth
+                    name="name"
+                    value={flatData.name}
+                    onChange={handleChange}
+                    required
+                    style={{ marginBottom: '20px' }}
+                />
+                <TextField
+                    label="Адрес"
+                    variant="outlined"
+                    fullWidth
+                    name="address"
+                    value={flatData.address}
+                    onChange={handleChange}
+                    required
+                    style={{ marginBottom: '20px' }}
+                />
+                <Button type="submit" variant="contained" color="primary" disabled={loading} style={{ marginRight: '10px' }}>
+                    Добавить
+                </Button>
+                <Button variant="contained" color="secondary" onClick={handleBack} disabled={loading}>
+                    Назад
+                </Button>
+            </form>
+        </div>
     );
 }
 
