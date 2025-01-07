@@ -1,8 +1,8 @@
 package com.rdba.flat_manager.controller;
 
+import com.rdba.flat_manager.dto.UserDTO;
 import com.rdba.flat_manager.entity.Flat;
 import com.rdba.flat_manager.entity.User;
-import com.rdba.flat_manager.entity.Utility;
 import com.rdba.flat_manager.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -20,15 +20,15 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PutMapping("/register")
+    @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public User registerUser(@RequestBody User user) {
         return userService.createUser(user);
     }
 
-    @PutMapping("/login")
-    public String loginUser(@RequestParam String username, @RequestParam String password) {
-        Optional<User> user = userService.loginUser(username, password);
+    @PostMapping("/login")
+    public String loginUser(@RequestBody UserDTO userDTO) {
+        Optional<User> user = userService.loginUser(userDTO.getUsername(), userDTO.getPassword());
         return user.isPresent() ? "Login successful" : "Invalid credentials";
     }
 
