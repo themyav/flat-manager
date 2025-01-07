@@ -5,15 +5,19 @@ import com.rdba.flat_manager.repo.UtilityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UtilityService {
-    @Autowired
     private final UtilityRepository utilityRepository;
 
     public UtilityService(UtilityRepository utilityRepository) {
         this.utilityRepository = utilityRepository;
+    }
+
+    public List<Utility> getAllUtility() {
+        return utilityRepository.findAll();
     }
 
     public Utility createUtility(Utility utility) {

@@ -12,11 +12,12 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-    @Autowired
     private final UserRepository userRepository;
+    private final FlatService flatService;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, FlatService flatService) {
         this.userRepository = userRepository;
+        this.flatService = flatService;
     }
 
     public User createUser(User user) {
@@ -35,9 +36,8 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public List<Flat> getFlatByUserId(Long id) {
-        Optional<User> user = userRepository.findById(id);
-        return user.map(User::getFlats).orElse(null);
+    public List<Flat> getFlatsByUserId(Long id) {
+        return flatService.getAllFlats().stream().filter(flat -> flat.getUser().getId().equals(id)).toList();
     }
 
 }

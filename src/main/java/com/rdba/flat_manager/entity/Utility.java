@@ -23,4 +23,8 @@ public class Utility {
     @Column
     private ZonedDateTime date;
 
+    @ManyToOne
+    @JoinColumn(name = "flat_id")
+    private Flat flat;
+
 }

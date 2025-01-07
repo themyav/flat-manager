@@ -13,11 +13,16 @@ import java.util.Optional;
 
 @Service
 public class FlatService {
-    @Autowired
     private final FlatRepository flatRepository;
+    private final UtilityService utilityService;
 
-    public FlatService(FlatRepository flatRepository) {
+    public FlatService(FlatRepository flatRepository, UtilityService utilityService) {
         this.flatRepository = flatRepository;
+        this.utilityService = utilityService;
+    }
+
+    public List<Flat> getAllFlats() {
+        return flatRepository.findAll();
     }
 
     public Flat createFlat(Flat flat) {
@@ -39,8 +44,7 @@ public class FlatService {
 
 
     public List<Utility> getUtilitiesByFlatId(Long id) {
-        Optional<Flat> flat = flatRepository.findById(id);
-        return flat.map(Flat::getUtilities).orElse(null);
+        return utilityService.getAllUtility().stream().filter(utility -> utility.getFlat().getId().equals(id)).toList();
     }
 
 }

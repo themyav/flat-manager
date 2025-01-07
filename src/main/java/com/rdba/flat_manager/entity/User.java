@@ -28,6 +28,4 @@ public class User {
     private String email;
     @Column
     private String phoneNumber;
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Flat> flats;
 }

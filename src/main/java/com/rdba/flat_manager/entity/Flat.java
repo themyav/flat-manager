@@ -20,7 +20,8 @@ public class Flat {
     private String name;
     @Column
     private String address;
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Utility> utilities;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }
 

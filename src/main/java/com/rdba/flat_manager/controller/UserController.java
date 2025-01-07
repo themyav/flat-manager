@@ -3,6 +3,7 @@ package com.rdba.flat_manager.controller;
 import com.rdba.flat_manager.dto.UserDTO;
 import com.rdba.flat_manager.entity.Flat;
 import com.rdba.flat_manager.entity.User;
+import com.rdba.flat_manager.service.FlatService;
 import com.rdba.flat_manager.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +16,11 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
+    private final FlatService flatService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, FlatService flatService) {
         this.userService = userService;
+        this.flatService = flatService;
     }
 
     @PostMapping("/register")
@@ -45,7 +48,7 @@ public class UserController {
     @GetMapping("/flats/{id}")
     @ResponseStatus(HttpStatus.OK)
     public List<Flat> getFlatsByUserId(@PathVariable Long id) {
-        return userService.getFlatByUserId(id);
+        return flatService.getAllFlats().stream().filter(flat -> flat.getUser().getId().equals(id)).toList();
     }
 
 }
