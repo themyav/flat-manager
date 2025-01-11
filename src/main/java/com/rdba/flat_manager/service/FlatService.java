@@ -1,5 +1,6 @@
 package com.rdba.flat_manager.service;
 
+import com.rdba.flat_manager.dto.FlatUpdateDTO;
 import com.rdba.flat_manager.entity.Flat;
 import com.rdba.flat_manager.entity.User;
 import com.rdba.flat_manager.entity.Utility;
@@ -34,24 +35,20 @@ public class FlatService {
     }
 
 
-    public Flat updateFlat(Long id, Flat flat) {
+    public Flat updateFlat(Long id, FlatUpdateDTO flatUpdateDTO) {
         Flat flat1 = flatRepository.findById(id).orElse(null);
         if (flat1 != null) {
-            flat1.setName(flat.getName());
-            flat1.setAddress(flat.getAddress());
-            User user = userRepository.findById(flat.getUser().getId()).orElse(null);
+            flat1.setName(flatUpdateDTO.getName());
+            flat1.setAddress(flatUpdateDTO.getAddress());
 
+            User user = userRepository.findById(flatUpdateDTO.getUserId()).orElse(null);
             if (user != null) flat1.setUser(user);
             else throw new UserNotFound("updateFlat");
 
             return flatRepository.save(flat1);
         } else throw new FlatNotFound("updateFlat");
-
     }
 
-    public void deleteFlat(Flat flat) {
-        flatRepository.delete(flat);
-    }
 
     public void deleteFlatById(Long id) {
         flatRepository.deleteById(id);

@@ -1,5 +1,6 @@
 package com.rdba.flat_manager.controller;
 
+import com.rdba.flat_manager.dto.FlatUpdateDTO;
 import com.rdba.flat_manager.entity.Flat;
 import com.rdba.flat_manager.entity.User;
 import com.rdba.flat_manager.entity.Utility;
@@ -22,6 +23,12 @@ public class FlatController {
         this.flatService = flatService;
     }
 
+    @GetMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public List<Flat> getAllFlats() {
+        return flatService.getAllFlats();
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Flat createFlat(@RequestBody Flat flat) {
@@ -36,7 +43,7 @@ public class FlatController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Flat getFlatById(@PathVariable Long id, @RequestBody Flat flat) {
+    public Flat updateFlatById(@PathVariable Long id, @RequestBody FlatUpdateDTO flat) {
         return flatService.updateFlat(id, flat);
     }
 
