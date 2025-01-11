@@ -4,6 +4,7 @@ import com.rdba.flat_manager.dto.UserDTO;
 import com.rdba.flat_manager.entity.Flat;
 import com.rdba.flat_manager.entity.User;
 import com.rdba.flat_manager.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
+@Tag(name = "User API", description = "Контроллер управления пользователями")
 public class UserController {
 
     private final UserService userService;
