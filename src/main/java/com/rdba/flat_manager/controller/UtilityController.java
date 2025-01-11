@@ -2,6 +2,7 @@ package com.rdba.flat_manager.controller;
 
 import com.rdba.flat_manager.entity.Utility;
 import com.rdba.flat_manager.service.UtilityService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +11,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/utilities")
+@Tag(name = "Utility API", description = "Контроллер управления услугами")
 public class UtilityController {
     @Autowired
     private final UtilityService utilityService;
