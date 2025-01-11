@@ -6,8 +6,13 @@ import com.rdba.flat_manager.repo.UtilityPaymentRepository;
 import com.rdba.flat_manager.repo.UtilityRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UtilityPaymentService {
@@ -20,6 +25,19 @@ public class UtilityPaymentService {
     public List<UtilityPayment> getAllUtilityPayments() {
         return utilityPaymentRepository.findAll();
     }
+
+    public List<UtilityPayment> getAllUtilityPaymentsByDate(String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        LocalDate localDate = LocalDate.parse(date, formatter);
+
+        ZoneId zoneId = ZoneId.systemDefault();
+        ZonedDateTime startOfDay = localDate.atStartOfDay(zoneId);
+        ZonedDateTime endOfDay = localDate.plusDays(1).atStartOfDay(zoneId).minusNanos(1);
+
+        return utilityPaymentRepository.findAll().stream()
+                .filter(utilityPayment -> !utilityPayment.getDate().isBefore(startOfDay) && !utilityPayment.getDate().isAfter(endOfDay))
+                .collect(Collectors.toList());    }
+
 
     public UtilityPayment createUtilityPayment(UtilityPayment utility) {
         return utilityPaymentRepository.save(utility);
