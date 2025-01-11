@@ -23,6 +23,12 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public List<User> createFlat() {
+        return userService.getAllUsers();
+    }
+
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public User registerUser(@RequestBody User user) {
@@ -45,6 +51,11 @@ public class UserController {
     @GetMapping("/id/{id}")
     public Optional<User> getUserById(@PathVariable Long id) {
         return userService.getUserById(id);
+    }
+
+    @PutMapping("/id/{id}")
+    public User updateUserById(@PathVariable Long id, @RequestBody User user) {
+        return userService.updateUser(id, user);
     }
 
     @GetMapping("/flats/{id}")

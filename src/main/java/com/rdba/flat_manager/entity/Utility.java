@@ -22,7 +22,6 @@ public class Utility {
     private Integer price;
     @Column
     private ZonedDateTime date;
-
     @ManyToOne
     @JoinColumn(name = "flat_id")
     private Flat flat;
