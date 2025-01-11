@@ -1,5 +1,7 @@
 package com.rdba.flat_manager.controller;
 
+import com.rdba.flat_manager.dto.UtilityUpdateDTO;
+import com.rdba.flat_manager.entity.User;
 import com.rdba.flat_manager.entity.Utility;
 import com.rdba.flat_manager.service.UtilityService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,9 +24,9 @@ public class UtilityController {
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public List<Utility> getFlatById() {
-        return utilityService.getAllUtility();
+    @ResponseStatus(HttpStatus.CREATED)
+    public List<Utility> createFlat() {
+        return utilityService.getAllUtilities();
     }
 
     @PostMapping
@@ -43,5 +45,11 @@ public class UtilityController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteFlatById(@PathVariable Long id) {
         utilityService.deleteUtilityById(id);
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Utility deleteFlatById(@PathVariable Long id, @RequestBody UtilityUpdateDTO utility) {
+        return utilityService.updateUtility(id, utility);
     }
 }

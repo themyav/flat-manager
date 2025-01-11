@@ -19,8 +19,14 @@ public class UtilityPaymentController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<UtilityPayment> getFlatById() {
+    public List<UtilityPayment> getAllFlats() {
         return utilityPaymentService.getAllUtilityPayments();
+    }
+
+    @GetMapping("/date")
+    @ResponseStatus(HttpStatus.OK)
+    public List<UtilityPayment> getFlatsByDate(@RequestParam final String date) {
+        return utilityPaymentService.getAllUtilityPaymentsByDate(date);
     }
 
     @PostMapping
