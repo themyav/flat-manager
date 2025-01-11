@@ -25,5 +25,4 @@ public class Utility {
     @ManyToOne
     @JoinColumn(name = "flat_id")
     private Flat flat;
-
 }
