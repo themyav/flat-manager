@@ -20,7 +20,7 @@ public class UtilityPayment {
     private String paymentUrl;
     @Column
     private Integer price;
-    @Column(name = "id_paid")
+    @Column(name = "is_paid")
     private Boolean isPaid;
     @Column
     private ZonedDateTime date;
