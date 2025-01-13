@@ -26,6 +26,23 @@ export const getUser = async (username) => {
     }
 };
 
+export const getUserById = async (id) => {
+    try {
+        return await axios.get(`${BASE_URL}/users/id/${id}`);
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const updateUserById = async (id, userData) => {
+    try {
+        console.log("gonna send user: ", userData)
+        return await axios.put(`${BASE_URL}/users/id/${id}`, userData);
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const getUserFlats = async (userId) => {
     try {
         return await axios.get(`${BASE_URL}/users/flats/${userId}`);

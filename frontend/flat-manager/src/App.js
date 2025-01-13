@@ -8,6 +8,7 @@ import FlatForm from './pages/FlatForm.tsx';
 import FlatPage from './pages/FlatPage.tsx';
 import UtilityForm from './pages/UtilityForm.tsx';
 import UtilityPage from './pages/UtilityPage.tsx';
+import UserPage from './pages/UserPage.tsx';
 
 function App() {
     return (
@@ -21,6 +22,7 @@ function App() {
                     <Route path="/flat/:id" element={<FlatPage />} />
                     <Route path="/add-utility/:id" element={<UtilityForm />} />
                     <Route path="/utility/:id" element={<UtilityPage />} />
+                    <Route path="/user/:id" element={<UserPage />} />
                     <Route path="*" element={<Navigate to="/" />} />
                 </Routes>
             </div>
