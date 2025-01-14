@@ -9,7 +9,6 @@ import com.rdba.flat_manager.exception.FlatNotFound;
 import com.rdba.flat_manager.exception.UserNotFound;
 import com.rdba.flat_manager.repo.FlatRepository;
 import com.rdba.flat_manager.repo.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -67,10 +66,7 @@ public class FlatService {
     }
 
     public List<UtilityPayment> getUtilityPaymentsByFlatId(Long id, String date) {
-        return utilityPaymentService.getAllUtilityPaymentsByDate(date).stream().filter(payment -> {
-            System.out.println(payment.getDate() + " " + payment.getUtility() + " " + payment.getPaymentUrl() + " " + payment.getId());
-            return payment.getId() > -1;
-        }).toList();
+        return utilityPaymentService.getAllUtilityPaymentsByDate(date).stream().filter(payment -> payment.getUtility().getFlat().getId().equals(id)).toList();
     }
 }
 //payment.getUtility().getFlat().getId().equals(id)).toList();
