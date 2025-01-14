@@ -18,7 +18,14 @@ import {DatePicker} from '@mui/x-date-pickers/DatePicker';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
-import {updateFlat, getFlatUtilities, deleteUtility, getFlat} from './api.ts';
+import {
+    updateFlat,
+    getFlatUtilities,
+    deleteUtility,
+    getFlat,
+    getAllUtilityPayments,
+    getUtilityPaymentsByFlatIdAndDate
+} from './api.ts';
 import DeleteIcon from '@mui/icons-material/Delete';
 import InfoIcon from '@mui/icons-material/Info';
 import 'dayjs/locale/ru'; // Import Russian locale
@@ -59,6 +66,14 @@ function FlatPage() {
             const response = await getFlatUtilities(id);
             setUtilities(response.data);
 
+            const date_string = "01." + selectedDate.format('MM.YYYY')
+            console.log('Selected: ' + date_string)
+            const resp2 = await getUtilityPaymentsByFlatIdAndDate(parseInt(id), date_string)
+            const ut_arr = []
+            resp2.data.forEach((payment) => {
+                ut_arr.push(payment.utility)
+            })
+setUtilities(ut_arr)
             // Создаем объект для отслеживания оплаченных услуг
             const paidStatus = {};
             response.data.forEach((utility) => {
