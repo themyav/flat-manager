@@ -73,8 +73,6 @@ public class UtilityPaymentService {
             payment.setPrice(utility.getPrice());
             payment.setIsPaid(false);
             payment.setDate(firstDayOfNextMonth);  // Устанавливаем дату следующего месяца
-            payment.setPaymentUrl(generatePaymentUrl(utility));  // Генерация ссылки на оплату (опционально)
-
             payments.add(payment);
         }
 
@@ -82,10 +80,5 @@ public class UtilityPaymentService {
         System.out.println("Создано " + payments.size() + " платежей за коммунальные услуги на " + firstDayOfNextMonth);
     }
 
-
-    //TODO: изменить
-    private String generatePaymentUrl(Utility utility) {
-        return "https://payment.service.com/pay?utilityId=" + utility.getId();
-    }
 
 }

@@ -1,8 +1,6 @@
 package com.rdba.flat_manager.controller;
 
-import com.rdba.flat_manager.dto.UtilityDTO;
 import com.rdba.flat_manager.dto.UtilityUpdateDTO;
-import com.rdba.flat_manager.entity.User;
 import com.rdba.flat_manager.entity.Utility;
 import com.rdba.flat_manager.service.UtilityService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,7 +30,7 @@ public class UtilityController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Utility createUtility(@RequestBody UtilityDTO utility) {
+    public Utility createUtility(@RequestBody Utility utility) {
         return utilityService.createUtility(utility);
     }
 

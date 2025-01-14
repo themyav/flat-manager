@@ -18,6 +18,8 @@ public class Utility {
     private Long id;
     @Column
     private String name;
+    @Column(name = "payment_url")
+    private String paymentUrl;
     @Column
     private Integer price;
     @Column
