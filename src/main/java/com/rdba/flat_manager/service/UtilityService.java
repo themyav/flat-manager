@@ -37,7 +37,7 @@ public class UtilityService {
 
         UtilityPayment utilityPayment = new UtilityPayment();
         utilityPayment.setUtility(utility);
-        utilityPayment.setDate(ZonedDateTime.now());
+        utilityPayment.setDate(ZonedDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0));
         utilityPayment.setIsPaid(false);
         utilityPayment.setPrice(utilityDTO.getPrice());
         utilityPaymentRepository.save(utilityPayment);
