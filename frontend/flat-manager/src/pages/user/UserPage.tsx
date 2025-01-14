@@ -1,9 +1,8 @@
-// Страница пользователя (UserPage.js)
 import * as React from 'react';
 import {useState, useEffect, useCallback} from 'react';
 import {useParams, useNavigate, useLocation} from 'react-router-dom';
 import {Button, TextField, Typography} from '@mui/material';
-import {getUserById, updateUserById} from './api.ts'; // Adjust path as needed
+import {getUserById, updateUserById} from '../api.ts'; // Adjust path as needed
 
 function UserPage() {
     const {id} = useParams();
@@ -82,12 +81,11 @@ function UserPage() {
             return;
         }
 
-        // Если оба поля пароля пустые, то считаем, что пароль не меняется
         if (editedUser.oldPassword !== "" || editedUser.newPassword !== "") {
-            // if (editedUser.oldPassword !== user.password) {
-            //     setError("Старый пароль не совпадает с паролем пользователя");
-            //     return;
-            // }
+            if (editedUser.oldPassword !== user.password) {
+                setError("Старый пароль не совпадает с паролем пользователя");
+                return;
+            }
             if (editedUser.oldPassword === editedUser.newPassword) {
                 setError("Новый пароль совпадает со старым паролем пользователя");
                 return;
@@ -103,7 +101,8 @@ function UserPage() {
                 email: editedUser.email,
                 phoneNumber: editedUser.phoneNumber,
                 oldPassword: editedUser.oldPassword,
-                newPassword: editedUser.newPassword
+                newPassword: editedUser.newPassword,
+                password: editedUser.newPassword === '' ? user.password : editedUser.newPassword
             };
 
             const response = await updateUserById(user.id, updatedUser);
@@ -112,6 +111,7 @@ function UserPage() {
                 setError(response.data.error);
             } else if (response && response.data) {
                 setUser(response.data);
+                location.state.user = response.data
                 setIsEditing(false);
                 setEditedUser(prev => ({...prev, oldPassword: '', newPassword: ''}));
             } else {

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import {useNavigate, useLocation} from 'react-router-dom';
-import {getUser, getUserFlats, deleteFlat} from './api.ts';
+import {getUser, getUserFlats, deleteFlat} from '../api.ts';
 import {useEffect, useState} from 'react';
 import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -14,7 +14,6 @@ function HomePage() {
     const [flats, setFlats] = useState([]);
 
     useEffect(() => {
-        // Check if user is already stored in localStorage
         const storedUser = JSON.parse(localStorage.getItem('user'));
         if (storedUser) {
             setUser(storedUser);
@@ -24,7 +23,6 @@ function HomePage() {
                 try {
                     const response = await getUser(location.state.user.username);
                     setUser(response.data);
-                    // Store user in localStorage
                     localStorage.setItem('user', JSON.stringify(response.data));
                     const flatsResponse = await getUserFlats(response.data.id);
                     setFlats(flatsResponse.data);
@@ -77,8 +75,8 @@ function HomePage() {
 
     const getWelcomeMessage = () => {
         if (user) {
-            if (user.first_name && user.last_name) {
-                return `Добро пожаловать, ${user.first_name} ${user.last_name}!`;
+            if (user.firstName && user.lastName) {
+                return `Добро пожаловать, ${user.firstName} ${user.lastName}!`;
             } else {
                 return `Добро пожаловать, user${user.id}!`;
             }

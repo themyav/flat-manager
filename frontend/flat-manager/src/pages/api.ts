@@ -36,7 +36,6 @@ export const getUserById = async (id) => {
 
 export const updateUserById = async (id, userData) => {
     try {
-        console.log("gonna send user: ", userData)
         return await axios.put(`${BASE_URL}/users/id/${id}`, userData);
     } catch (error) {
         throw error;
@@ -69,6 +68,7 @@ export const deleteFlat = async (flatId) => {
 
 export const updateFlat = async (flatId, flatData) => {
     try {
+        console.log('upd: ', flatId, flatData)
         return await axios.put(`${BASE_URL}/flats/${flatId}`, flatData);
     } catch (error) {
         throw error;
@@ -172,6 +172,32 @@ export const getUtilityPaymentsByFlatIdAndDate = async (flatId: number, date: st
 export const checkPayment = async (utilityId) => {
     try {
         return await axios.put(`${BASE_URL}/utility-payments/${utilityId}`);
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getPaymentStatus = async (flatId: number, startDate: string, endDate: string) => {
+    try {
+        return await axios.get(`${BASE_URL}/stats/payment-status/${flatId}`, {
+            params: {
+                startDate,
+                endDate,
+            },
+        });
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getPriceHistory = async (flatId: number, startDate: string, endDate: string) => {
+    try {
+        return await axios.get(`${BASE_URL}/stats/price-history/${flatId}`, {
+            params: {
+                startDate,
+                endDate,
+            },
+        });
     } catch (error) {
         throw error;
     }

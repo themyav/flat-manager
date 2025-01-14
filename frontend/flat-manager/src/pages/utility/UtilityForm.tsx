@@ -1,16 +1,16 @@
 import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import { useNavigate, useParams } from 'react-router-dom';
-import { addUtility } from './api.ts'; // Убедитесь, что путь к файлу api.ts верный
-import { useState } from 'react';
-import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs'; // Импорт dayjs
-import 'dayjs/locale/ru'; // Импорт русской локали для dayjs
+import {useNavigate, useParams} from 'react-router-dom';
+import {addUtility} from '../api.ts';
+import {useState} from 'react';
+import {LocalizationProvider, DatePicker} from '@mui/x-date-pickers';
+import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import 'dayjs/locale/ru';
 
 function UtilityForm() {
-    const { id: flatIdFromParams } = useParams();
+    const {id: flatIdFromParams} = useParams();
     const flatId = flatIdFromParams || localStorage.getItem('flatId'); // Добавил проверку на null/undefined
     const navigate = useNavigate();
 
@@ -25,7 +25,7 @@ function UtilityForm() {
         price: '',
         date: null,
         paymentUrl: '', // Добавлено поле для URL оплаты
-        flat: { id: parseInt(flatId as string) } // Добавил явное приведение типа
+        flat: {id: parseInt(flatId as string)} // Добавил явное приведение типа
     };
 
     const [utilityData, setUtilityData] = useState(initialUtilityData);
@@ -78,8 +78,8 @@ function UtilityForm() {
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setUtilityData({ ...utilityData, [name]: value });
+        const {name, value} = e.target;
+        setUtilityData({...utilityData, [name]: value});
     };
 
     const handleBack = () => {
@@ -98,9 +98,9 @@ function UtilityForm() {
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs} locale="ru">
-            <div style={{ padding: '20px', maxWidth: '400px', margin: '0 auto' }}>
-                <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Добавление коммунального платежа</h2>
-                {loading && <div style={{ color: 'gray', textAlign: 'center', marginBottom: '10px' }}>Загрузка...</div>}
+            <div style={{padding: '20px', maxWidth: '400px', margin: '0 auto'}}>
+                <h2 style={{textAlign: 'center', marginBottom: '20px'}}>Добавление коммунального платежа</h2>
+                {loading && <div style={{color: 'gray', textAlign: 'center', marginBottom: '10px'}}>Загрузка...</div>}
                 {message && (
                     <div
                         style={{
@@ -121,7 +121,7 @@ function UtilityForm() {
                         value={utilityData.name}
                         onChange={handleChange}
                         required
-                        style={{ marginBottom: '20px' }}
+                        style={{marginBottom: '20px'}}
                     />
                     <TextField
                         label="Цена"
@@ -132,7 +132,7 @@ function UtilityForm() {
                         onChange={handleChange}
                         required
                         type="number"
-                        style={{ marginBottom: '20px' }}
+                        style={{marginBottom: '20px'}}
                     />
                     <TextField
                         label="URL для оплаты"
@@ -141,13 +141,13 @@ function UtilityForm() {
                         name="paymentUrl"
                         value={utilityData.paymentUrl}
                         onChange={handleChange}
-                        style={{ marginBottom: '20px' }}
+                        style={{marginBottom: '20px'}}
                     />
                     <DatePicker
                         label="День передачи показаний"
                         value={utilityData.date}
                         onChange={(newDate) => {
-                            setUtilityData({ ...utilityData, date: newDate });
+                            setUtilityData({...utilityData, date: newDate});
                         }}
                         renderInput={(params) => (
                             <TextField
@@ -162,13 +162,13 @@ function UtilityForm() {
                         views={['day']} // Ограничиваем видимость только днем
                         // disableMaskedInput // Удалил, так как он устарел и не нужен
                     />
-                    <div style={{ marginTop: '20px' }}>
+                    <div style={{marginTop: '20px'}}>
                         <Button
                             type="submit"
                             variant="contained"
                             color="primary"
                             disabled={loading}
-                            style={{ marginRight: '10px' }}
+                            style={{marginRight: '10px'}}
                         >
                             Добавить
                         </Button>
