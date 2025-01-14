@@ -2,10 +2,9 @@ package com.rdba.flat_manager.controller;
 
 import com.rdba.flat_manager.dto.FlatUpdateDTO;
 import com.rdba.flat_manager.entity.Flat;
-import com.rdba.flat_manager.entity.User;
 import com.rdba.flat_manager.entity.Utility;
+import com.rdba.flat_manager.entity.UtilityPayment;
 import com.rdba.flat_manager.service.FlatService;
-import com.rdba.flat_manager.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -53,6 +52,12 @@ public class FlatController {
     @ResponseStatus(HttpStatus.OK)
     public List<Utility> getUtilitiesByFlatId(@PathVariable Long id) {
         return flatService.getUtilitiesByFlatId(id);
+    }
+
+    @GetMapping("/utilities/payments/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<UtilityPayment> getUtilityPayments(@PathVariable Long id, @RequestParam final String date) {
+        return flatService.getUtilityPaymentsByFlatId(id, date);
     }
 
     @DeleteMapping("/{id}")
