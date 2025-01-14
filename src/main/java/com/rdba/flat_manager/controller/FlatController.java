@@ -26,9 +26,10 @@ public class FlatController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public List<Flat> getAllFlats() {
+    public List<Flat> getFlats() {
         return flatService.getAllFlats();
     }
+
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
