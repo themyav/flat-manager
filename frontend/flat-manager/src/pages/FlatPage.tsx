@@ -233,7 +233,7 @@ function FlatPage() {
                                 <TableCell>ID</TableCell>
                                 <TableCell>Название</TableCell>
                                 <TableCell>Цена</TableCell>
-                                <TableCell>Дата</TableCell>
+                                <TableCell>Дата подачи показаний</TableCell>
                                 <TableCell>Оплачено</TableCell>
                                 <TableCell>Действия</TableCell>
                             </TableRow>
@@ -251,7 +251,7 @@ function FlatPage() {
                                     <TableCell>{utility.id}</TableCell>
                                     <TableCell>{utility.name}</TableCell>
                                     <TableCell>{utility.price}</TableCell>
-                                    <TableCell>{formatDate(utility.date)}</TableCell>
+                                    <TableCell>{dayjs(utility.date).format('DD')}</TableCell>
                                     <TableCell>
                                         <Checkbox
                                             checked={paidUtilities[utility.id]}

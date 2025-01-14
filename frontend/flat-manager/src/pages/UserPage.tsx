@@ -113,6 +113,7 @@ function UserPage() {
                 setError(response.data.error);
             } else if (response && response.data) {
                 setUser(response.data);
+                location.state.user = response.data
                 setIsEditing(false);
                 setEditedUser(prev => ({...prev, oldPassword: '', newPassword: ''}));
             } else {
