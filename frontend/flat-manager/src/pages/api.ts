@@ -68,6 +68,7 @@ export const deleteFlat = async (flatId) => {
 
 export const updateFlat = async (flatId, flatData) => {
     try {
+        console.log('upd: ', flatId, flatData)
         return await axios.put(`${BASE_URL}/flats/${flatId}`, flatData);
     } catch (error) {
         throw error;

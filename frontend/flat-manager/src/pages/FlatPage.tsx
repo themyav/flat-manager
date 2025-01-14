@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { useState, useEffect, useCallback } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import {useState, useEffect, useCallback} from 'react';
+import {useNavigate, useParams} from 'react-router-dom';
 import {
     Button,
     TextField,
@@ -13,26 +13,23 @@ import {
     Paper,
     Checkbox,
     Typography,
-    Grid,
     Box,
 } from '@mui/material';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs, { Dayjs } from 'dayjs';
+import {DatePicker} from '@mui/x-date-pickers/DatePicker';
+import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
+import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs, {Dayjs} from 'dayjs';
 import {
     updateFlat,
     deleteUtility,
     getFlat,
     getUtilityPaymentsByFlatIdAndDate,
     checkPayment,
-    getPaymentStatus,  // Import the new API functions
-    getPriceHistory
 } from './api.ts';
 import DeleteIcon from '@mui/icons-material/Delete';
 import InfoIcon from '@mui/icons-material/Info';
 import 'dayjs/locale/ru'; // Import Russian locale
-import { styled } from '@mui/system'; // Import styled
+import {styled} from '@mui/system'; // Import styled
 
 // Styled component for the main container
 const FlatPageContainer = styled('div')({
@@ -44,22 +41,18 @@ const FlatPageContainer = styled('div')({
 
 function FlatPage() {
     const navigate = useNavigate();
-    const { id } = useParams();
+    const {id} = useParams();
     const [flat, setFlat] = useState(null);
     const [utilities, setUtilities] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
     const [editedFlat, setEditedFlat] = useState({
+        id: '',
         name: '',
-        address: ''
+        address: '',
+        userId: ''
     });
     const [selectedDate, setSelectedDate] = useState(dayjs());
     const [paidUtilities, setPaidUtilities] = useState({});
-
-    // New states for statistics
-    const [paymentStatus, setPaymentStatus] = useState<any>(null);
-    const [priceHistory, setPriceHistory] = useState<any>(null);
-    const [statsStartDate, setStatsStartDate] = useState<Dayjs | null>(dayjs().subtract(1, 'year')); // Default to 1 year ago
-    const [statsEndDate, setStatsEndDate] = useState<Dayjs | null>(dayjs()); // Default to today
 
 
     const fetchFlatData = useCallback(async () => {
@@ -69,8 +62,10 @@ function FlatPage() {
             const response = await getFlat(id);
             setFlat(response.data);
             setEditedFlat({
+                id: response.data.id,
                 name: response.data.name,
-                address: response.data.address
+                address: response.data.address,
+                userId: response.data.user.id
             });
         } catch (error) {
             console.error('Error fetching flat:', error);
@@ -98,25 +93,11 @@ function FlatPage() {
         }
     }, [id]);
 
-    // New function to fetch statistics
-    const fetchStatistics = useCallback(async () => {
-        if (!id || !statsStartDate || !statsEndDate) return;
-
-        try {
-            const startDateString = statsStartDate.format('YYYY-MM');
-            const endDateString = statsEndDate.format('YYYY-MM');
-
-            const paymentStatusResponse = await getPaymentStatus(parseInt(id), startDateString, endDateString);
-            console.log('resp is: ', paymentStatusResponse)
-            setPaymentStatus(paymentStatusResponse.data);
-
-            const priceHistoryResponse = await getPriceHistory(parseInt(id), startDateString, endDateString);
-            setPriceHistory(priceHistoryResponse.data);
-
-        } catch (error) {
-            console.error('Error fetching statistics:', error);
+    const handleGoToStats = () => {
+        if (flat?.id) {
+            navigate(`/flat/${flat.id}/stats`);
         }
-    }, [id, statsStartDate, statsEndDate]); // Include dependencies
+    };
 
 
     useEffect(() => {
@@ -129,16 +110,13 @@ function FlatPage() {
     useEffect(() => {
         if (flat) {
             setEditedFlat({
+                id: flat.id,
                 name: flat.name,
-                address: flat.address
+                address: flat.address,
+                userId: flat.user.id
             });
         }
     }, [flat]);
-
-    // Fetch statistics whenever the date range changes
-    useEffect(() => {
-        fetchStatistics();
-    }, [fetchStatistics]);
 
 
     const handleEdit = () => {
@@ -152,7 +130,8 @@ function FlatPage() {
             const updatedFlat = {
                 ...flat,
                 name: editedFlat.name,
-                address: editedFlat.address
+                address: editedFlat.address,
+                userId: editedFlat.userId
             };
             await updateFlat(flat.id, updatedFlat);
             setFlat(updatedFlat);
@@ -163,7 +142,7 @@ function FlatPage() {
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => { // Type the event
-        const { name, value } = e.target;
+        const {name, value} = e.target;
         setEditedFlat(prev => ({
             ...prev,
             [name]: value
@@ -176,7 +155,7 @@ function FlatPage() {
 
     const handleCheckboxChange = (utilityId: number) => { // Type utilityId
         setPaidUtilities((prev) => {
-            const newPaid = { ...prev };
+            const newPaid = {...prev};
             newPaid[utilityId] = !prev[utilityId];
             return newPaid;
         });
@@ -195,9 +174,9 @@ function FlatPage() {
     };
 
     const handleUtilityDetails = (utility: any) => { // Type utility
-        if(flat?.id){
+        if (flat?.id) {
             localStorage.setItem('flatId', String(flat.id));
-            navigate(`/utility/${utility.id}`, { state: { utility } });
+            navigate(`/utility/${utility.id}`, {state: {utility}});
         }
 
     };
@@ -248,7 +227,7 @@ function FlatPage() {
                             variant="contained"
                             color="primary"
                             onClick={handleSave}
-                            sx={{ mr: 2 }}
+                            sx={{mr: 2}}
                         >
                             Сохранить
                         </Button>
@@ -264,7 +243,7 @@ function FlatPage() {
                     <Box mb={3}>
                         <Typography variant="h6">Название: {flat?.name}</Typography>
                         <Typography variant="h6">Адрес: {flat?.address}</Typography>
-                        <Button variant="outlined" onClick={handleEdit} sx={{ mt: 1 }}>
+                        <Button variant="outlined" onClick={handleEdit} sx={{mt: 1}}>
                             Редактировать
                         </Button>
                     </Box>
@@ -280,13 +259,13 @@ function FlatPage() {
                 </Box>
 
                 {/* Utilities Table */}
-                <Typography variant="h6" sx={{ mb: 2 }}>
+                <Typography variant="h6" sx={{mb: 2}}>
                     {unpaidCount === 0
                         ? 'Все услуги оплачены в этом месяце'
                         : `Количество услуг к оплате: ${unpaidCount}`}
                 </Typography>
 
-                <TableContainer component={Paper} sx={{ mb: 3 }}>
+                <TableContainer component={Paper} sx={{mb: 3}}>
                     <Table>
                         <TableHead>
                             <TableRow>
@@ -321,12 +300,12 @@ function FlatPage() {
                                     <TableCell>
                                         <Button
                                             onClick={() => handleUtilityDetails(utility)}
-                                            sx={{ mr: 1 }}
+                                            sx={{mr: 1}}
                                         >
-                                            <InfoIcon />
+                                            <InfoIcon/>
                                         </Button>
                                         <Button onClick={() => handleUtilityDelete(utility.id)}>
-                                            <DeleteIcon />
+                                            <DeleteIcon/>
                                         </Button>
                                     </TableCell>
                                 </TableRow>
@@ -335,59 +314,22 @@ function FlatPage() {
                     </Table>
                 </TableContainer>
 
-                <Button variant="contained" color="primary" onClick={handleAddUtility} sx={{ mb: 2 }}>
+                <Button variant="contained" color="primary" onClick={handleAddUtility} sx={{mb: 2}}>
                     Добавить услугу
                 </Button>
-                <Button variant="outlined" color="primary" onClick={handleBack} sx={{ ml: 2, mb: 2 }}>
+                <Button variant="outlined" color="primary" onClick={handleBack} sx={{ml: 2, mb: 2}}>
                     Назад
                 </Button>
-
-
-                {/* Statistics Section */}
-                <Typography variant="h5" gutterBottom>
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleGoToStats}
+                    sx={{ml: 2, mb: 2}}
+                >
                     Статистика
-                </Typography>
-                <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
-                    <Grid item>
-                        <DatePicker
-                            label="Начальная дата"
-                            value={statsStartDate}
-                            onChange={(newValue) => setStatsStartDate(newValue)}
-                            renderInput={(params) => <TextField {...params} helperText={null} />}
-                        />
-
-                    </Grid>
-                    <Grid item>
-                        <DatePicker
-                            label="Конечная дата"
-                            value={statsEndDate}
-                            onChange={(newValue) => setStatsEndDate(newValue)}
-                            renderInput={(params) => <TextField {...params} helperText={null} />}
-                        />
-                    </Grid>
-                    <Grid item>
-                        <Button variant="contained" onClick={fetchStatistics}>
-                            Показать статистику
-                        </Button>
-                    </Grid>
-                </Grid>
-
-
-                {paymentStatus && (
-                    <Box mb={3}>
-                        <Typography variant="h6">Статус оплаты:</Typography>
-                        <pre>{JSON.stringify(paymentStatus, null, 2)}</pre>
-                    </Box>
-                )}
-
-                {priceHistory && (
-                    <Box>
-                        <Typography variant="h6">История цен:</Typography>
-                        <pre>{JSON.stringify(priceHistory, null, 2)}</pre>
-                    </Box>
-                )}
-
+                </Button>
             </FlatPageContainer>
+
         </LocalizationProvider>
     );
 }
