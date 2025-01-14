@@ -36,7 +36,6 @@ export const getUserById = async (id) => {
 
 export const updateUserById = async (id, userData) => {
     try {
-        console.log("gonna send user: ", userData)
         return await axios.put(`${BASE_URL}/users/id/${id}`, userData);
     } catch (error) {
         throw error;

@@ -103,7 +103,8 @@ function UserPage() {
                 email: editedUser.email,
                 phoneNumber: editedUser.phoneNumber,
                 oldPassword: editedUser.oldPassword,
-                newPassword: editedUser.newPassword
+                newPassword: editedUser.newPassword,
+                password: editedUser.newPassword === '' ? user.password : editedUser.newPassword
             };
 
             const response = await updateUserById(user.id, updatedUser);
