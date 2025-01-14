@@ -64,9 +64,11 @@ function UtilityPage() {
         try {
             const updatedUtility = {
                 ...utility,
+                id: utility.id,
                 name: editedUtility.name,
                 price: parseFloat(editedUtility.price),
-                date: new Date(editedUtility.date).toISOString()
+                date: new Date(editedUtility.date).toISOString(),
+                flatId: utility.flat.id
             };
 
             await updateUtility(utility.id, updatedUtility);
