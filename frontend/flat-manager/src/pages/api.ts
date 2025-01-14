@@ -118,3 +118,61 @@ export const deleteUtility = async (utilityId) => {
 export const getFlat = async (id: string) => {
     return axios.get(`${BASE_URL}/flats/${id}`);
 };
+
+export const getAllUtilityPayments = async () => {
+    try {
+        return await axios.get(`${BASE_URL}/utility-payments`);
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getUtilityPaymentsByDate = async (date: string) => {
+    try {
+        return await axios.get(`${BASE_URL}/utility-payments/date`, {params: {date}});
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const createUtilityPayment = async (utilityPaymentData) => {
+    try {
+        return await axios.post(`${BASE_URL}/utility-payments`, utilityPaymentData);
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getUtilityPaymentById = async (id: number) => {
+    try {
+        return await axios.get(`${BASE_URL}/utility-payments/${id}`);
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const deleteUtilityPaymentById = async (id: number) => {
+    try {
+        return await axios.delete(`${BASE_URL}/utility-payments/${id}`);
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getUtilityPaymentsByFlatIdAndDate = async (flatId: number, date: string) => {
+    try {
+        return await axios.get(`${BASE_URL}/flats/utilities/payments/${flatId}`, {
+            params: {date}, // Pass the date as a query parameter
+        });
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const checkPayment = async (utilityId) => {
+    try {
+        return await axios.put(`${BASE_URL}/utility-payments/${utilityId}`);
+    } catch (error) {
+        throw error;
+    }
+};
