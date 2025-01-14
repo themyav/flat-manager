@@ -22,7 +22,7 @@ import {
     updateFlat,
     deleteUtility,
     getFlat,
-    getUtilityPaymentsByFlatIdAndDate
+    getUtilityPaymentsByFlatIdAndDate, checkPayment
 } from './api.ts';
 import DeleteIcon from '@mui/icons-material/Delete';
 import InfoIcon from '@mui/icons-material/Info';
@@ -135,11 +135,11 @@ function FlatPage() {
 
     const handleCheckboxChange = (utilityId) => {
         setPaidUtilities((prev) => {
-            const newPaid = { ...prev };
+            const newPaid = {...prev};
             newPaid[utilityId] = !prev[utilityId];
             return newPaid;
         });
-        handleUtilityUpdate(utilityId, !paidUtilities[utilityId]);
+        checkPayment(utilityId);
     };
 
     const handleAddUtility = () => {

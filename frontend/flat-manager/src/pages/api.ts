@@ -168,3 +168,11 @@ export const getUtilityPaymentsByFlatIdAndDate = async (flatId: number, date: st
         throw error;
     }
 };
+
+export const checkPayment = async (utilityId) => {
+    try {
+        return await axios.put(`${BASE_URL}/utility-payments/${utilityId}`);
+    } catch (error) {
+        throw error;
+    }
+};
