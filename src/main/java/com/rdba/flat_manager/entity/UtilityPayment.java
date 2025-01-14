@@ -8,23 +8,21 @@ import lombok.NoArgsConstructor;
 import java.time.ZonedDateTime;
 
 @Entity
-@Table(name = "utility")
+@Table(name = "utilityPayment")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Utility {
+public class UtilityPayment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column
-    private String name;
-    @Column(name = "payment_url")
-    private String paymentUrl;
-    @Column
     private Integer price;
+    @Column(name = "is_paid")
+    private Boolean isPaid;
     @Column
     private ZonedDateTime date;
     @ManyToOne
-    @JoinColumn(name = "flat_id")
-    private Flat flat;
+    @JoinColumn(name = "utility_id")
+    private Utility utility;
 }

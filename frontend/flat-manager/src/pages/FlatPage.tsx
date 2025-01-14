@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { useState, useEffect, useCallback } from 'react';
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import {useState, useEffect, useCallback} from 'react';
+import {useNavigate, useParams} from 'react-router-dom'; // useLocation удален, т.к. больше не нужен
 import {
     Button,
     TextField,
@@ -10,23 +10,36 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    Paper
+    Paper,
+    Checkbox,
+    Typography
 } from '@mui/material';
-import { updateFlat, getFlatUtilities, deleteUtility, getFlat } from './api.ts';
+import {DatePicker} from '@mui/x-date-pickers/DatePicker';
+import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
+import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import {
+    updateFlat,
+    deleteUtility,
+    getFlat,
+    getUtilityPaymentsByFlatIdAndDate, checkPayment
+} from './api.ts';
 import DeleteIcon from '@mui/icons-material/Delete';
 import InfoIcon from '@mui/icons-material/Info';
+import 'dayjs/locale/ru'; // Import Russian locale
 
 function FlatPage() {
     const navigate = useNavigate();
-    const location = useLocation();
-    const { id } = useParams();
-    const [flat, setFlat] = useState(location.state?.flat);
+    const {id} = useParams();
+    const [flat, setFlat] = useState(null); // location.state больше не используем для initial flat
     const [utilities, setUtilities] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
     const [editedFlat, setEditedFlat] = useState({
         name: '',
         address: ''
     });
+    const [selectedDate, setSelectedDate] = useState(dayjs());
+    const [paidUtilities, setPaidUtilities] = useState({});
 
     const fetchFlatData = useCallback(async () => {
         if (!id) return;
@@ -43,29 +56,33 @@ function FlatPage() {
         }
     }, [id]);
 
-    const fetchUtilities = useCallback(async () => {
+    const fetchUtilities = useCallback(async (date) => {
         if (!id) return;
 
         try {
-            const response = await getFlatUtilities(id);
-            setUtilities(response.data);
+            const date_string = date.format('01.MM.YYYY');
+            const resp = await getUtilityPaymentsByFlatIdAndDate(parseInt(id), date_string);
+            const ut_arr = [];
+            const paidStatus = {};
+
+            resp.data.forEach((payment) => {
+                ut_arr.push(payment.utility);
+                paidStatus[payment.utility.id] = payment.isPaid || false;
+            });
+
+            setUtilities(ut_arr);
+            setPaidUtilities(paidStatus);
         } catch (error) {
             console.error('Error fetching utilities:', error);
         }
     }, [id]);
 
     useEffect(() => {
-        if (!flat && id) {
+        if (id) {
             fetchFlatData();
+            fetchUtilities(selectedDate); // Fetch utilities on component mount and when id changes
         }
-        fetchUtilities();
-    }, [fetchFlatData, fetchUtilities, flat, id]);
-
-    useEffect(() => {
-        if (location.state?.needRefresh) {
-            fetchUtilities();
-        }
-    }, [location.state, fetchUtilities]);
+    }, [fetchFlatData, fetchUtilities, id, selectedDate]); // selectedDate добавлен в зависимости
 
     useEffect(() => {
         if (flat) {
@@ -98,7 +115,7 @@ function FlatPage() {
     };
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
         setEditedFlat(prev => ({
             ...prev,
             [name]: value
@@ -107,6 +124,15 @@ function FlatPage() {
 
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleDateString('ru-RU');
+    };
+
+    const handleCheckboxChange = (utilityId) => {
+        setPaidUtilities((prev) => {
+            const newPaid = {...prev};
+            newPaid[utilityId] = !prev[utilityId];
+            return newPaid;
+        });
+        checkPayment(utilityId);
     };
 
     const handleAddUtility = () => {
@@ -121,138 +147,142 @@ function FlatPage() {
 
     const handleUtilityDetails = (utility) => {
         localStorage.setItem('flatId', flat.id);
-        navigate(`/utility/${utility.id}`, { state: { utility } });
+        navigate(`/utility/${utility.id}`, {state: {utility}});
     };
 
     const handleUtilityDelete = async (utilityId) => {
         try {
             await deleteUtility(utilityId);
-            fetchUtilities();
+            fetchUtilities(selectedDate);
         } catch (error) {
             console.error('Error deleting utility:', error);
         }
     };
+    const handleDateChange = (newValue) => {
+        setSelectedDate(newValue);
+        fetchUtilities(newValue); // Заново запрашиваем данные при смене даты
+    };
 
-    if (!flat) {
-        return <div>Loading...</div>;
-    }
+    const unpaidCount = utilities.filter((u) => !paidUtilities[u.id]).length;
 
     return (
-        <div style={{ padding: '20px' }}>
-            <h1>Информация о квартире</h1>
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">
+            <div style={{padding: '20px'}}>
+                <h1>Информация о квартире</h1>
 
-            {isEditing ? (
-                <div style={{ marginBottom: '20px' }}>
-                    <TextField
-                        label="Название"
-                        name="name"
-                        value={editedFlat.name}
-                        onChange={handleChange}
-                        fullWidth
-                        style={{ marginBottom: '10px' }}
-                    />
-                    <TextField
-                        label="Адрес"
-                        name="address"
-                        value={editedFlat.address}
-                        onChange={handleChange}
-                        fullWidth
-                        style={{ marginBottom: '10px' }}
-                    />
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleSave}
-                        style={{ marginRight: '10px' }}
-                    >
-                        Сохранить
-                    </Button>
-                    <Button
-                        variant="contained"
-                        color="secondary"
-                        onClick={() => setIsEditing(false)}
-                    >
-                        Отмена
-                    </Button>
-                </div>
-            ) : (
-                <div style={{ marginBottom: '20px' }}>
-                    <h2>Название: {flat.name}</h2>
-                    <h3>Адрес: {flat.address}</h3>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleEdit}
-                        style={{ marginBottom: '20px' }}
-                    >
-                        Редактировать
-                    </Button>
-                </div>
-            )}
+                {isEditing ? (
+                    <div style={{marginBottom: '20px'}}>
+                        <TextField
+                            label="Название"
+                            name="name"
+                            value={editedFlat.name}
+                            onChange={handleChange}
+                            fullWidth
+                            style={{marginBottom: '10px'}}
+                        />
+                        <TextField
+                            label="Адрес"
+                            name="address"
+                            value={editedFlat.address}
+                            onChange={handleChange}
+                            fullWidth
+                            style={{marginBottom: '10px'}}
+                        />
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleSave}
+                            style={{marginRight: '10px'}}
+                        >
+                            Сохранить
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={() => setIsEditing(false)}
+                        >
+                            Отмена
+                        </Button>
+                    </div>
+                ) : (
+                    <div style={{marginBottom: '20px'}}>
+                        <h2>Название: {flat?.name}</h2>
+                        <h3>Адрес: {flat?.address}</h3>
+                        <Button variant="outlined" onClick={handleEdit} style={{marginTop: '10px'}}>
+                            Редактировать
+                        </Button>
+                    </div>
+                )}
 
-            <h2>Коммунальные платежи</h2>
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={handleAddUtility}
-                style={{ marginBottom: '10px' }}
-            >
-                Добавить коммунальный платеж
-            </Button>
-            <TableContainer component={Paper}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>ID</TableCell>
-                            <TableCell>Название</TableCell>
-                            <TableCell>Цена</TableCell>
-                            <TableCell>Дата</TableCell>
-                            <TableCell>Действия</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {utilities.map((utility) => (
-                            <TableRow key={utility.id}>
-                                <TableCell>{utility.id}</TableCell>
-                                <TableCell>{utility.name}</TableCell>
-                                <TableCell>{utility.price}</TableCell>
-                                <TableCell>{formatDate(utility.date)}</TableCell>
-                                <TableCell>
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        size="small"
-                                        startIcon={<InfoIcon />}
-                                        onClick={() => handleUtilityDetails(utility)}
-                                        style={{ marginRight: '10px' }}
-                                    >
-                                        Подробнее
-                                    </Button>
-                                    <Button
-                                        variant="contained"
-                                        color="error"
-                                        size="small"
-                                        startIcon={<DeleteIcon />}
-                                        onClick={() => handleUtilityDelete(utility.id)}
-                                    >
-                                        Удалить
-                                    </Button>
-                                </TableCell>
+                <DatePicker
+                    views={['year', 'month']}
+                    value={selectedDate}
+                    onChange={handleDateChange}
+                />
+
+                <Typography variant="h6" style={{margin: '20px 0'}}>
+                    {unpaidCount === 0
+                        ? 'Все услуги оплачены в этом месяце'
+                        : `Количество услуг к оплате: ${unpaidCount}`}
+                </Typography>
+
+                <TableContainer component={Paper}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>ID</TableCell>
+                                <TableCell>Название</TableCell>
+                                <TableCell>Цена</TableCell>
+                                <TableCell>Дата</TableCell>
+                                <TableCell>Оплачено</TableCell>
+                                <TableCell>Действия</TableCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-
-            <Button
-                variant="contained"
-                color="secondary"
-                onClick={handleBack}
-                style={{ marginTop: '20px' }}
-            >
-                Назад
-            </Button>
-        </div>
+                        </TableHead>
+                        <TableBody>
+                            {utilities.map((utility) => (
+                                <TableRow
+                                    key={utility.id}
+                                    style={{
+                                        backgroundColor: paidUtilities[utility.id]
+                                            ? '#d0f0c0'
+                                            : '#f8d7da'
+                                    }}
+                                >
+                                    <TableCell>{utility.id}</TableCell>
+                                    <TableCell>{utility.name}</TableCell>
+                                    <TableCell>{utility.price}</TableCell>
+                                    <TableCell>{formatDate(utility.date)}</TableCell>
+                                    <TableCell>
+                                        <Checkbox
+                                            checked={paidUtilities[utility.id]}
+                                            onChange={() => handleCheckboxChange(utility.id)}
+                                        />
+                                    </TableCell>
+                                    <TableCell>
+                                        <Button
+                                            onClick={() => handleUtilityDetails(utility)}
+                                            style={{marginRight: '8px'}}
+                                        >
+                                            <InfoIcon/>
+                                        </Button>
+                                        <Button onClick={() => handleUtilityDelete(utility.id)}>
+                                            <DeleteIcon/>
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <Button variant="contained" color="primary" onClick={handleAddUtility} style={{marginTop: '20px'}}>
+                    Добавить услугу
+                </Button>
+                <Button variant="outlined" color="primary" onClick={handleBack}
+                        style={{marginTop: '20px', marginLeft: '10px'}}>
+                    Назад
+                </Button>
+            </div>
+        </LocalizationProvider>
     );
 }
 

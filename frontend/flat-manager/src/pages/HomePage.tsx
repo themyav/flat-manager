@@ -71,6 +71,10 @@ function HomePage() {
         navigate('/add-flat');
     };
 
+    const handleEditUser = () => {
+        navigate(`/user/${user.id}`, {state: {user}});
+    }
+
     const getWelcomeMessage = () => {
         if (user) {
             if (user.first_name && user.last_name) {
@@ -90,6 +94,9 @@ function HomePage() {
             </Button>
             <Button variant="contained" color="primary" onClick={handleAddFlat} style={{margin: '10px'}}>
                 Добавить квартиру
+            </Button>
+            <Button variant="contained" color="primary" onClick={handleEditUser} style={{margin: '10px'}}>
+                Редактировать профиль
             </Button>
             <TableContainer component={Paper}>
                 <Table>
