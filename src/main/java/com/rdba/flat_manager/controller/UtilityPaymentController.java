@@ -19,31 +19,31 @@ public class UtilityPaymentController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<UtilityPayment> getAllFlats() {
+    public List<UtilityPayment> getAllUtilityPayments() {
         return utilityPaymentService.getAllUtilityPayments();
     }
 
     @GetMapping("/date")
     @ResponseStatus(HttpStatus.OK)
-    public List<UtilityPayment> getFlatsByDate(@RequestParam final String date) {
+    public List<UtilityPayment> getUtilityPaymentsByDate(@RequestParam final String date) {
         return utilityPaymentService.getAllUtilityPaymentsByDate(date);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UtilityPayment createFlat(@RequestBody UtilityPayment utility) {
+    public UtilityPayment createUtilityPayment(@RequestBody UtilityPayment utility) {
         return utilityPaymentService.createUtilityPayment(utility);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Optional<UtilityPayment> getFlatById(@PathVariable Long id) {
+    public Optional<UtilityPayment> getUtilityPaymentById(@PathVariable Long id) {
         return utilityPaymentService.getUtilityPaymentById(id);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteFlatById(@PathVariable Long id) {
+    public void deleteUtilityPaymentById(@PathVariable Long id) {
         utilityPaymentService.deleteUtilityPaymentById(id);
     }
 }
