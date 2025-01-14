@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import {registerUser} from './api.ts'; // Import the registerUser function
+import {registerUser} from './api.ts';
 
 function SignupForm() {
     const [signupData, setSignupData] = useState({
@@ -56,9 +56,9 @@ function SignupForm() {
         }
 
         try {
-            const response = await registerUser(signupData); // Use the imported function
+            const response = await registerUser(signupData);
             if (response.status === 201) {
-                setSuccessMessage('Регистрация прошла успешно!'); // Set success message only after successful response
+                setSuccessMessage('Регистрация прошла успешно!');
             }
         } catch (error) {
             setError('Ошибка регистрации: ' + error.response.data.toString() + '.\nПопробуйте снова.');

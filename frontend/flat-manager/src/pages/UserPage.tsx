@@ -1,4 +1,3 @@
-// Страница пользователя (UserPage.js)
 import * as React from 'react';
 import {useState, useEffect, useCallback} from 'react';
 import {useParams, useNavigate, useLocation} from 'react-router-dom';
@@ -82,12 +81,11 @@ function UserPage() {
             return;
         }
 
-        // Если оба поля пароля пустые, то считаем, что пароль не меняется
         if (editedUser.oldPassword !== "" || editedUser.newPassword !== "") {
-            // if (editedUser.oldPassword !== user.password) {
-            //     setError("Старый пароль не совпадает с паролем пользователя");
-            //     return;
-            // }
+            if (editedUser.oldPassword !== user.password) {
+                setError("Старый пароль не совпадает с паролем пользователя");
+                return;
+            }
             if (editedUser.oldPassword === editedUser.newPassword) {
                 setError("Новый пароль совпадает со старым паролем пользователя");
                 return;

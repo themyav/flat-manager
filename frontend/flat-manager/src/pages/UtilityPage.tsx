@@ -4,8 +4,8 @@ import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { Button, TextField} from '@mui/material';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs'; // Импорт dayjs
-import 'dayjs/locale/ru'; // Импорт русской локали для dayjs
+import dayjs from 'dayjs';
+import 'dayjs/locale/ru';
 import { updateUtility, getUtility } from './api.ts';
 
 function UtilityPage() {

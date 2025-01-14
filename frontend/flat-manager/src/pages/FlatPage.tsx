@@ -31,11 +31,10 @@ import InfoIcon from '@mui/icons-material/Info';
 import 'dayjs/locale/ru'; // Import Russian locale
 import {styled} from '@mui/system'; // Import styled
 
-// Styled component for the main container
 const FlatPageContainer = styled('div')({
     padding: '20px',
-    maxWidth: '1000px', // Added max width for better layout on large screens
-    margin: '0 auto', // Center the content
+    maxWidth: '1000px',
+    margin: '0 auto',
 });
 
 
@@ -78,10 +77,10 @@ function FlatPage() {
         try {
             const date_string = date.format('01.MM.YYYY');
             const resp = await getUtilityPaymentsByFlatIdAndDate(parseInt(id), date_string);
-            const ut_arr: any[] = []; // Type explicitly as any[]
-            const paidStatus: { [key: number]: boolean } = {}; // Type explicitly
+            const ut_arr: any[] = [];
+            const paidStatus: { [key: number]: boolean } = {};
 
-            resp.data.forEach((payment: any) => { // Type explicitly
+            resp.data.forEach((payment: any) => {
                 ut_arr.push(payment.utility);
                 paidStatus[payment.utility.id] = payment.isPaid || false;
             });
