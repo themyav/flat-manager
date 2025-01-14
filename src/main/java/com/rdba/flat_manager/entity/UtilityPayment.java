@@ -16,8 +16,6 @@ public class UtilityPayment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(name = "payment_url")
-    private String paymentUrl;
     @Column
     private Integer price;
     @Column(name = "is_paid")

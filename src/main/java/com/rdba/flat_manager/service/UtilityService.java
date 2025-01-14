@@ -1,20 +1,16 @@
 package com.rdba.flat_manager.service;
 
-import com.rdba.flat_manager.dto.FlatUpdateDTO;
 import com.rdba.flat_manager.dto.UtilityUpdateDTO;
 import com.rdba.flat_manager.entity.Flat;
-import com.rdba.flat_manager.entity.User;
 import com.rdba.flat_manager.entity.Utility;
+import com.rdba.flat_manager.entity.UtilityPayment;
 import com.rdba.flat_manager.exception.FlatNotFound;
-import com.rdba.flat_manager.exception.UserNotFound;
 import com.rdba.flat_manager.exception.UtilityNotFound;
 import com.rdba.flat_manager.repo.FlatRepository;
+import com.rdba.flat_manager.repo.UtilityPaymentRepository;
 import com.rdba.flat_manager.repo.UtilityRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -23,19 +19,29 @@ import java.util.Optional;
 @Service
 public class UtilityService {
     private final UtilityRepository utilityRepository;
+    private final UtilityPaymentRepository utilityPaymentRepository;
     private final FlatRepository flatRepository;
 
-    public UtilityService(UtilityRepository utilityRepository, FlatRepository flatRepository) {
+    public UtilityService(UtilityRepository utilityRepository, FlatRepository flatRepository, UtilityPaymentRepository utilityPaymentRepository) {
         this.utilityRepository = utilityRepository;
         this.flatRepository = flatRepository;
+        this.utilityPaymentRepository = utilityPaymentRepository;
     }
 
     public List<Utility> getAllUtility() {
         return utilityRepository.findAll();
     }
 
-    public Utility createUtility(Utility utility) {
-        return utilityRepository.save(utility);
+    public Utility createUtility(Utility utilityDTO) {
+        Utility utility = utilityRepository.save(utilityDTO);
+
+        UtilityPayment utilityPayment = new UtilityPayment();
+        utilityPayment.setUtility(utility);
+        utilityPayment.setDate(ZonedDateTime.now());
+        utilityPayment.setIsPaid(false);
+        utilityPayment.setPrice(utilityDTO.getPrice());
+        utilityPaymentRepository.save(utilityPayment);
+        return utility;
     }
 
     public void deleteUtilityById(Long id) {

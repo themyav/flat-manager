@@ -1,7 +1,6 @@
 package com.rdba.flat_manager.controller;
 
 import com.rdba.flat_manager.dto.UtilityUpdateDTO;
-import com.rdba.flat_manager.entity.User;
 import com.rdba.flat_manager.entity.Utility;
 import com.rdba.flat_manager.service.UtilityService;
 import io.swagger.v3.oas.annotations.tags.Tag;
