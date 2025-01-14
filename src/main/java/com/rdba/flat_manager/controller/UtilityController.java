@@ -1,5 +1,6 @@
 package com.rdba.flat_manager.controller;
 
+import com.rdba.flat_manager.dto.UtilityDTO;
 import com.rdba.flat_manager.dto.UtilityUpdateDTO;
 import com.rdba.flat_manager.entity.User;
 import com.rdba.flat_manager.entity.Utility;
@@ -31,7 +32,7 @@ public class UtilityController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Utility createUtility(@RequestBody Utility utility) {
+    public Utility createUtility(@RequestBody UtilityDTO utility) {
         return utilityService.createUtility(utility);
     }
 
