@@ -2,7 +2,7 @@ import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useState } from 'react';
-import { loginUser } from './api.ts';
+import { loginUser } from '../api.ts';
 import { useNavigate } from 'react-router-dom';
 
 function LoginForm() {

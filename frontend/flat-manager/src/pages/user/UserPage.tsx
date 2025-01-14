@@ -2,7 +2,7 @@ import * as React from 'react';
 import {useState, useEffect, useCallback} from 'react';
 import {useParams, useNavigate, useLocation} from 'react-router-dom';
 import {Button, TextField, Typography} from '@mui/material';
-import {getUserById, updateUserById} from './api.ts'; // Adjust path as needed
+import {getUserById, updateUserById} from '../api.ts'; // Adjust path as needed
 
 function UserPage() {
     const {id} = useParams();

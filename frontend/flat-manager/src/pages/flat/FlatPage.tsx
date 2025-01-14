@@ -25,7 +25,7 @@ import {
     getFlat,
     getUtilityPaymentsByFlatIdAndDate,
     checkPayment,
-} from './api.ts';
+} from '../api.ts';
 import DeleteIcon from '@mui/icons-material/Delete';
 import InfoIcon from '@mui/icons-material/Info';
 import 'dayjs/locale/ru'; // Import Russian locale

@@ -3,13 +3,13 @@ import './App.css';
 import * as React from 'react';
 import {BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
 import StartPage from './pages/StartPage.tsx';
-import HomePage from './pages/HomePage.tsx';
-import FlatForm from './pages/FlatForm.tsx';
-import FlatPage from './pages/FlatPage.tsx';
-import UtilityForm from './pages/UtilityForm.tsx';
-import UtilityPage from './pages/UtilityPage.tsx';
-import UserPage from './pages/UserPage.tsx';
-import StatsPage from "./pages/StatsPage.tsx";
+import HomePage from './pages/user/HomePage.tsx';
+import FlatForm from './pages/flat/FlatForm.tsx';
+import FlatPage from './pages/flat/FlatPage.tsx';
+import UtilityForm from './pages/utility/UtilityForm.tsx';
+import UtilityPage from './pages/utility/UtilityPage.tsx';
+import UserPage from './pages/user/UserPage.tsx';
+import StatsPage from "./pages/stats/StatsPage.tsx";
 
 function App() {
     return (

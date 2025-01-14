@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import {registerUser} from './api.ts';
+import {registerUser} from '../api.ts';
 
 function SignupForm() {
     const [signupData, setSignupData] = useState({
@@ -23,6 +23,14 @@ function SignupForm() {
         setError('');
         setSuccessMessage('');
         setLoading(true);
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (signupData.email && !emailRegex.test(signupData.email)) {
+            setError('Неверный формат email.');
+            setLoading(false);
+            return;
+        }
+
 
         const phoneRegex = /^\+7 \d{3} \d{3} \d{2} \d{2}$/;
         if (!phoneRegex.test(signupData.phoneNumber)) {

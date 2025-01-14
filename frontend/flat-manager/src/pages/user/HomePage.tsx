@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import {useNavigate, useLocation} from 'react-router-dom';
-import {getUser, getUserFlats, deleteFlat} from './api.ts';
+import {getUser, getUserFlats, deleteFlat} from '../api.ts';
 import {useEffect, useState} from 'react';
 import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';

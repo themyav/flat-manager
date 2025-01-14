@@ -6,7 +6,7 @@ import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
-import { updateUtility, getUtility } from './api.ts';
+import { updateUtility, getUtility } from '../api.ts';
 
 function UtilityPage() {
     const navigate = useNavigate();
