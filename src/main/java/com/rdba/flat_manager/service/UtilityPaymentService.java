@@ -41,7 +41,8 @@ public class UtilityPaymentService {
 
         return utilityPaymentRepository.findAll().stream()
                 .filter(utilityPayment -> !utilityPayment.getDate().isBefore(startOfDay) && !utilityPayment.getDate().isAfter(endOfDay))
-                .collect(Collectors.toList());    }
+                .collect(Collectors.toList());
+    }
 
 
     public UtilityPayment createUtilityPayment(UtilityPayment utility) {
@@ -58,6 +59,14 @@ public class UtilityPaymentService {
 
     public Optional<UtilityPayment> getUtilityPaymentById(Long id) {
         return utilityPaymentRepository.findById(id);
+    }
+
+    public Optional<UtilityPayment> getUtilityPaymentByUtilityId(Long utilityId) {
+        return utilityPaymentRepository.findUtilityPaymentByUtilityId(utilityId);
+    }
+
+    public UtilityPayment updateUtilityPayment(UtilityPayment utilityPayment) {
+        return utilityPaymentRepository.save(utilityPayment);
     }
 
     public void createMonthlyUtilityPayments() {

@@ -3,6 +3,7 @@ package com.rdba.flat_manager.controller;
 import com.rdba.flat_manager.entity.UtilityPayment;
 import com.rdba.flat_manager.service.UtilityPaymentService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,6 +34,19 @@ public class UtilityPaymentController {
     @ResponseStatus(HttpStatus.CREATED)
     public UtilityPayment createUtilityPayment(@RequestBody UtilityPayment utility) {
         return utilityPaymentService.createUtilityPayment(utility);
+    }
+
+    @PutMapping("/{utilityId}")
+    public ResponseEntity<?> checkPayment(@PathVariable Long utilityId) {
+        Optional<UtilityPayment> payment = utilityPaymentService.getUtilityPaymentByUtilityId(utilityId);
+        if (payment.isPresent()) {
+            UtilityPayment actualPayment = payment.get();
+            actualPayment.setIsPaid(!actualPayment.getIsPaid());
+            UtilityPayment updatedPayment = utilityPaymentService.updateUtilityPayment(actualPayment);
+            return ResponseEntity.ok(updatedPayment);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("UtilityPayment not found");
+        }
     }
 
     @GetMapping("/{id}")
