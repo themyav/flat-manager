@@ -20,10 +20,8 @@ import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import {
     updateFlat,
-    getFlatUtilities,
     deleteUtility,
     getFlat,
-    getAllUtilityPayments,
     getUtilityPaymentsByFlatIdAndDate
 } from './api.ts';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -59,26 +57,21 @@ function FlatPage() {
         }
     }, [id]);
 
-    const fetchUtilities = useCallback(async () => {
+    const fetchUtilities = useCallback(async (date) => {
         if (!id) return;
 
         try {
-            const response = await getFlatUtilities(id);
-            setUtilities(response.data);
-
-            const date_string = "01." + selectedDate.format('MM.YYYY')
-            console.log('Selected: ' + date_string)
-            const resp2 = await getUtilityPaymentsByFlatIdAndDate(parseInt(id), date_string)
-            const ut_arr = []
-            resp2.data.forEach((payment) => {
-                ut_arr.push(payment.utility)
-            })
-setUtilities(ut_arr)
-            // Создаем объект для отслеживания оплаченных услуг
+            const date_string = date.format('01.MM.YYYY');
+            const resp = await getUtilityPaymentsByFlatIdAndDate(parseInt(id), date_string);
+            const ut_arr = [];
             const paidStatus = {};
-            response.data.forEach((utility) => {
-                paidStatus[utility.id] = utility.paid || false;
+
+            resp.data.forEach((payment) => {
+                ut_arr.push(payment.utility);
+                paidStatus[payment.utility.id] = payment.isPaid || false;
             });
+
+            setUtilities(ut_arr);
             setPaidUtilities(paidStatus);
         } catch (error) {
             console.error('Error fetching utilities:', error);
@@ -89,14 +82,14 @@ setUtilities(ut_arr)
         if (!flat && id) {
             fetchFlatData();
         }
-        fetchUtilities();
-    }, [fetchFlatData, fetchUtilities, flat, id]);
+        fetchUtilities(selectedDate);
+    }, [fetchFlatData, fetchUtilities, flat, id, selectedDate]);
 
     useEffect(() => {
         if (location.state?.needRefresh) {
-            fetchUtilities();
+            fetchUtilities(selectedDate);
         }
-    }, [location.state, fetchUtilities]);
+    }, [location.state, fetchUtilities, selectedDate]);
 
     useEffect(() => {
         if (flat) {
@@ -141,10 +134,11 @@ setUtilities(ut_arr)
     };
 
     const handleCheckboxChange = (utilityId) => {
-        setPaidUtilities((prev) => ({
-            ...prev,
-            [utilityId]: !prev[utilityId]
-        }));
+        setPaidUtilities((prev) => {
+            const newPaid = { ...prev };
+            newPaid[utilityId] = !prev[utilityId];
+            return newPaid;
+        });
         handleUtilityUpdate(utilityId, !paidUtilities[utilityId]);
     };
 
@@ -185,10 +179,13 @@ setUtilities(ut_arr)
     const handleUtilityDelete = async (utilityId) => {
         try {
             await deleteUtility(utilityId);
-            fetchUtilities();
+            fetchUtilities(selectedDate);
         } catch (error) {
             console.error('Error deleting utility:', error);
         }
+    };
+    const handleDateChange = (newValue) => {
+        setSelectedDate(newValue);
     };
 
     const unpaidCount = utilities.filter((u) => !paidUtilities[u.id]).length;
@@ -245,10 +242,7 @@ setUtilities(ut_arr)
                 <DatePicker
                     views={['year', 'month']}
                     value={selectedDate}
-                    onChange={(newValue) => {
-                        setSelectedDate(newValue);
-                        console.log(`Выбранный месяц: ${newValue.format('MMMM YYYY')}`);
-                    }}
+                    onChange={handleDateChange}
                 />
 
                 <Typography variant="h6" style={{margin: '20px 0'}}>
