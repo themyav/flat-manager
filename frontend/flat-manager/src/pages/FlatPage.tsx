@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {useState, useEffect, useCallback} from 'react';
-import {useNavigate, useLocation, useParams} from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom'; // useLocation удален, т.к. больше не нужен
 import {
     Button,
     TextField,
@@ -30,9 +30,8 @@ import 'dayjs/locale/ru'; // Import Russian locale
 
 function FlatPage() {
     const navigate = useNavigate();
-    const location = useLocation();
     const {id} = useParams();
-    const [flat, setFlat] = useState(location.state?.flat);
+    const [flat, setFlat] = useState(null); // location.state больше не используем для initial flat
     const [utilities, setUtilities] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
     const [editedFlat, setEditedFlat] = useState({
@@ -79,17 +78,11 @@ function FlatPage() {
     }, [id]);
 
     useEffect(() => {
-        if (!flat && id) {
+        if (id) {
             fetchFlatData();
+            fetchUtilities(selectedDate); // Fetch utilities on component mount and when id changes
         }
-        fetchUtilities(selectedDate);
-    }, [fetchFlatData, fetchUtilities, flat, id, selectedDate]);
-
-    useEffect(() => {
-        if (location.state?.needRefresh) {
-            fetchUtilities(selectedDate);
-        }
-    }, [location.state, fetchUtilities, selectedDate]);
+    }, [fetchFlatData, fetchUtilities, id, selectedDate]); // selectedDate добавлен в зависимости
 
     useEffect(() => {
         if (flat) {
@@ -156,26 +149,7 @@ function FlatPage() {
         localStorage.setItem('flatId', flat.id);
         navigate(`/utility/${utility.id}`, {state: {utility}});
     };
-    const handleUtilityUpdate = async (utilityId, isPaid) => {
-        try {
-            // Fetch the existing utility
-            const utilityToUpdate = utilities.find(u => u.id === utilityId);
 
-            if (!utilityToUpdate) {
-                console.error("Utility not found");
-                return;
-            }
-            const updatedUtility = {
-                ...utilityToUpdate,
-                paid: isPaid,
-            }
-
-            // Make API call to update
-            await updateFlat(flat.id, {utilities: [{...updatedUtility}]});
-        } catch (error) {
-            console.error('Error updating: ', error);
-        }
-    }
     const handleUtilityDelete = async (utilityId) => {
         try {
             await deleteUtility(utilityId);
@@ -186,6 +160,7 @@ function FlatPage() {
     };
     const handleDateChange = (newValue) => {
         setSelectedDate(newValue);
+        fetchUtilities(newValue); // Заново запрашиваем данные при смене даты
     };
 
     const unpaidCount = utilities.filter((u) => !paidUtilities[u.id]).length;
