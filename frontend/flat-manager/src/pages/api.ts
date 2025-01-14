@@ -175,3 +175,29 @@ export const checkPayment = async (utilityId) => {
         throw error;
     }
 };
+
+export const getPaymentStatus = async (flatId: number, startDate: string, endDate: string) => {
+    try {
+        return await axios.get(`${BASE_URL}/stats/payment-status/${flatId}`, {
+            params: {
+                startDate,
+                endDate,
+            },
+        });
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getPriceHistory = async (flatId: number, startDate: string, endDate: string) => {
+    try {
+        return await axios.get(`${BASE_URL}/stats/price-history/${flatId}`, {
+            params: {
+                startDate,
+                endDate,
+            },
+        });
+    } catch (error) {
+        throw error;
+    }
+};
