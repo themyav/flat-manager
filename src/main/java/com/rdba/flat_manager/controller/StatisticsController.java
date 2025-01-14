@@ -1,6 +1,5 @@
 package com.rdba.flat_manager.controller;
 
-import com.rdba.flat_manager.entity.UtilityPayment;
 import com.rdba.flat_manager.service.StatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +18,7 @@ public class StatisticsController {
     @Autowired
     private StatisticsService statisticsService;
 
-    @GetMapping("/pyament-status/{flat_id}")
+    @GetMapping("/payment-status/{flat_id}")
     public ResponseEntity<?> getPaymentStatus(
             @PathVariable("flat_id") Long flatId,
             @RequestParam("startDate") String startDate,
