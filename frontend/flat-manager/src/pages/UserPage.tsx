@@ -84,10 +84,10 @@ function UserPage() {
 
         // Если оба поля пароля пустые, то считаем, что пароль не меняется
         if (editedUser.oldPassword !== "" || editedUser.newPassword !== "") {
-            if (editedUser.oldPassword !== user.password) {
-                setError("Старый пароль не совпадает с паролем пользователя");
-                return;
-            }
+            // if (editedUser.oldPassword !== user.password) {
+            //     setError("Старый пароль не совпадает с паролем пользователя");
+            //     return;
+            // }
             if (editedUser.oldPassword === editedUser.newPassword) {
                 setError("Новый пароль совпадает со старым паролем пользователя");
                 return;

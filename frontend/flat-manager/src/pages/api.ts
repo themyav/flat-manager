@@ -99,6 +99,7 @@ export const getUtility = async (utilityId) => {
     }
 };
 export const updateUtility = async (utilityId, utilityData) => {
+    console.log("util data is: ", utilityData)
     try {
         return await axios.put(`${BASE_URL}/utilities/${utilityId}`, utilityData);
     } catch (error) {
