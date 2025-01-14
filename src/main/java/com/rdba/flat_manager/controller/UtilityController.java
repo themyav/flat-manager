@@ -25,31 +25,32 @@ public class UtilityController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public List<Utility> createFlat() {
+    public List<Utility> createUtility() {
         return utilityService.getAllUtilities();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Utility createFlat(@RequestBody Utility utility) {
+    public Utility createUtility(@RequestBody Utility utility) {
         return utilityService.createUtility(utility);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Optional<Utility> getFlatById(@PathVariable Long id) {
+    public Optional<Utility> getUtilityById(@PathVariable Long id) {
         return utilityService.getUtilityById(id);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteFlatById(@PathVariable Long id) {
+    public void deleteUtilityById(@PathVariable Long id) {
         utilityService.deleteUtilityById(id);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Utility deleteFlatById(@PathVariable Long id, @RequestBody UtilityUpdateDTO utility) {
+    public Utility updateUtilityById(@PathVariable Long id, @RequestBody UtilityUpdateDTO utility) {
+        System.out.println("id is: " + id);
         return utilityService.updateUtility(id, utility);
     }
 }
