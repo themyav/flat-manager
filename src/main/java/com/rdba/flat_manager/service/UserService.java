@@ -28,7 +28,10 @@ public class UserService {
     }
 
     public User createUser(User user) {
-        return userRepository.save(user);
+        Optional<User> existed = userRepository.findByUsernameOrEmailOrPhoneNumber(user.getUsername(), user.getEmail(), user.getPhoneNumber());
+        if (existed.isEmpty()) {
+            return userRepository.save(user);
+        } else return null;
     }
 
     public User updateUser(Long id, User user) {
