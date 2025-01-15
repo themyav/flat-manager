@@ -5,7 +5,13 @@ import {
     Button,
     Typography,
     Grid,
-    Paper
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
 } from '@mui/material';
 import {DatePicker} from '@mui/x-date-pickers/DatePicker';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
@@ -58,6 +64,95 @@ function StatsPage() {
         navigate(`/flat/${id}`);
     };
 
+    const formatPaymentStatus = (paymentStatus) => {
+        if (!paymentStatus) {
+            return null;
+        }
+
+        const rows = Object.entries(paymentStatus).sort(([dateA], [dateB]) => dateA.localeCompare(dateB)).map(([date, data]) => ({
+            date,
+            totalAmount: data.totalAmount,
+            paidCount: data.paidCount,
+            unpaidCount: data.unpaidCount,
+            paidByUtility: Object.entries(data.paidCountByUtility).map(([utility, count]) => `${utility}: ${count}`).join(', ') || '-',
+            unpaidByUtility: Object.entries(data.unpaidCountByUtility).map(([utility, count]) => `${utility}: ${count}`).join(', ') || '-',
+            totalAmountByUtility: Object.entries(data.totalAmountByUtility).map(([utility, amount]) => `${utility}: ${amount}`).join(', ') || '-',
+        }));
+
+        return (
+            <TableContainer component={Paper}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Месяц</TableCell>
+                            <TableCell>Общая сумма</TableCell>
+                            <TableCell>Оплачено</TableCell>
+                            <TableCell>Не оплачено</TableCell>
+                            <TableCell>Оплачено по услугам</TableCell>
+                            <TableCell>Не оплачено по услугам</TableCell>
+                            <TableCell>Сумма по услугам</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {rows.map((row) => (
+                            <TableRow key={row.date}>
+                                <TableCell>{row.date}</TableCell>
+                                <TableCell>{row.totalAmount}</TableCell>
+                                <TableCell>{row.paidCount}</TableCell>
+                                <TableCell>{row.unpaidCount}</TableCell>
+                                <TableCell>{row.paidByUtility}</TableCell>
+                                <TableCell>{row.unpaidByUtility}</TableCell>
+                                <TableCell>{row.totalAmountByUtility}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        );
+    };
+
+    const formatPriceHistory = (priceHistory) => {
+        if (!priceHistory) {
+            return null;
+        }
+
+        const rows = Object.entries(priceHistory).map(([utility, history]) => ({
+            utility,
+            history: history.sort((a, b) => a.date.localeCompare(b.date)),
+        }));
+
+
+        return (
+            <>
+                {rows.map(({utility, history}) => (
+                    <div key={utility}>
+                        <Typography variant="h6" gutterBottom>{utility}</Typography>
+                        <TableContainer component={Paper}>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Дата</TableCell>
+                                        <TableCell>Цена</TableCell>
+                                        <TableCell>Оплачено</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {history.map((item, index) => (
+                                        <TableRow key={index}>
+                                            <TableCell>{item.date}</TableCell>
+                                            <TableCell>{item.price}</TableCell>
+                                            <TableCell>{item.isPaid ? 'Да' : 'Нет'}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </div>
+                ))}
+            </>
+        );
+    };
+
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">
             <StatsPageContainer>
@@ -92,7 +187,7 @@ function StatsPage() {
                         <Typography variant="h6" gutterBottom>
                             Статус оплаты:
                         </Typography>
-                        <pre>{JSON.stringify(paymentStatus, null, 2)}</pre>
+                        {formatPaymentStatus(paymentStatus)}
                     </StatsCard>
                 )}
 
@@ -101,7 +196,7 @@ function StatsPage() {
                         <Typography variant="h6" gutterBottom>
                             История цен:
                         </Typography>
-                        <pre>{JSON.stringify(priceHistory, null, 2)}</pre>
+                        {formatPriceHistory(priceHistory)}
                     </StatsCard>
                 )}
 
