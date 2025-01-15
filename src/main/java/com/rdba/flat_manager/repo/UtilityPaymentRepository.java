@@ -12,12 +12,9 @@ public interface UtilityPaymentRepository extends JpaRepository<UtilityPayment, 
 
     Optional<UtilityPayment> findUtilityPaymentByUtilityId(Long id);
 
-    List<UtilityPayment> findUtilityPaymentsByDateBetweenAndUtility(
-            ZonedDateTime startDate,
-            ZonedDateTime endDate,
-            Utility utility
-    );
+    List<UtilityPayment> findUtilityPaymentsByUtilityId(Long id);
 
+    void deleteAllByUtilityId(Long id);
 
     List<UtilityPayment> findUtilityPaymentsByDateBetweenAndUtilityIn(
             ZonedDateTime startDate,
