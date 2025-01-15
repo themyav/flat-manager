@@ -71,5 +71,4 @@ public class FlatService {
         return utilityPaymentService.getAllUtilityPaymentsByDate(date).stream().filter(payment -> payment.getUtility().getFlat().getId().equals(id)).toList();
     }
 }
-//payment.getUtility().getFlat().getId().equals(id)).toList();
 

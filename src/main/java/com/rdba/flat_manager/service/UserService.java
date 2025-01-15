@@ -41,7 +41,7 @@ public class UserService {
         User user1 = userRepository.findById(id).orElse(null);
         if (user1 != null) {
             user1.setUsername(user.getUsername());
-            user1.setPassword(user.getPassword());
+            user1.setPassword(passwordEncode(user.getPassword()));
             user1.setFirstName(user.getFirstName());
             user1.setLastName(user.getLastName());
             user1.setEmail(user.getEmail());

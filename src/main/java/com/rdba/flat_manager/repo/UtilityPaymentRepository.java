@@ -12,8 +12,6 @@ public interface UtilityPaymentRepository extends JpaRepository<UtilityPayment, 
 
     Optional<UtilityPayment> findUtilityPaymentByUtilityId(Long id);
 
-    List<UtilityPayment> findUtilityPaymentsByUtilityId(Long id);
-
     void deleteAllByUtilityId(Long id);
 
     List<UtilityPayment> findUtilityPaymentsByDateBetweenAndUtilityIn(

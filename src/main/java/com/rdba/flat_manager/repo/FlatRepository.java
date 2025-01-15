@@ -4,6 +4,4 @@ import com.rdba.flat_manager.entity.Flat;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FlatRepository extends JpaRepository<Flat, Long> {
-
-    Flat findById(long id);
 }

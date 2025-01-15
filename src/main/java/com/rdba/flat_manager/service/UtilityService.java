@@ -81,7 +81,6 @@ public class UtilityService {
         if (date == null || date.isEmpty()) {
             throw new IllegalArgumentException("Дата не может быть пустой");
         }
-        // Формат строки даты, например: "2024-01-11T15:30:00+03:00"
         DateTimeFormatter formatter = DateTimeFormatter.ISO_ZONED_DATE_TIME;
         return ZonedDateTime.parse(date, formatter);
     }

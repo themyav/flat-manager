@@ -50,10 +50,6 @@ public class UtilityPaymentService {
         return utilityPaymentRepository.save(utility);
     }
 
-    public void deleteUtilityPayment(UtilityPayment utility) {
-        utilityPaymentRepository.delete(utility);
-    }
-
     public void deleteUtilityPaymentById(Long id) {
         utilityPaymentRepository.deleteById(id);
     }

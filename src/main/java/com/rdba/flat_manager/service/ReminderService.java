@@ -27,17 +27,16 @@ public class ReminderService {
         this.mailSender = mailSender;
     }
 
-    @Scheduled(cron = "0 0 9 * * ?") // Запускать каждый день в 9:00 утра (настройте по своему усмотрению)
-//    @Scheduled(cron = "0 * * * * ?")
+    @Scheduled(cron = "0 0 9 * * ?")
     public void sendPaymentReminders() {
         ZonedDateTime now = ZonedDateTime.now();
-        ZonedDateTime threeDaysBefore = now.plusDays(3); // Дата, за 3 дня до которой нужно отправить напоминание
+        ZonedDateTime threeDaysBefore = now.plusDays(3);
 
         List<Utility> utilities = utilityRepository.findUtilitiesByDateBetween(now, threeDaysBefore);
 
         for (Utility utility : utilities) {
             if (utility.getDate().isAfter(now)) {
-                User user = utility.getFlat().getUser(); // Получаем пользователя, связанного с квартирой
+                User user = utility.getFlat().getUser();
                 sendReminderEmail(user, utility);
             }
         }

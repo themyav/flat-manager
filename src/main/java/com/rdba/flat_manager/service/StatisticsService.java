@@ -7,6 +7,7 @@ import com.rdba.flat_manager.repo.FlatRepository;
 import com.rdba.flat_manager.repo.UtilityPaymentRepository;
 import com.rdba.flat_manager.repo.UtilityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
@@ -20,13 +21,16 @@ import java.util.stream.Collectors;
 @Service
 public class StatisticsService {
 
-    @Autowired
     private UtilityPaymentRepository utilityPaymentRepository;
-    @Autowired
     private UtilityRepository utilityRepository;
-    @Autowired
     private FlatRepository flatRepository;
 
+
+    public StatisticsService(UtilityPaymentRepository utilityPaymentRepository, UtilityRepository utilityRepository, FlatRepository flatRepository) {
+        this.utilityPaymentRepository = utilityPaymentRepository;
+        this.utilityRepository = utilityRepository;
+        this.flatRepository = flatRepository;
+    }
 
     public Map<String, Object> getPaymentStatus(Long flatId, ZonedDateTime startDate, ZonedDateTime endDate) {
         Flat flat = flatRepository.findById(flatId).orElse(null);
