@@ -1,6 +1,6 @@
 import * as React from 'react';
-import LoginForm from './LoginForm.tsx';
-import SignupForm from './SignupForm.tsx';
+import LoginForm from './user/LoginForm.tsx';
+import SignupForm from './user/SignupForm.tsx';
 import {useState} from "react";
 import Button from "@mui/material/Button";
 

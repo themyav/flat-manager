@@ -10,6 +10,7 @@ import com.rdba.flat_manager.exception.UserNotFound;
 import com.rdba.flat_manager.repo.FlatRepository;
 import com.rdba.flat_manager.repo.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +38,7 @@ public class FlatService {
     }
 
 
+    @Transactional
     public Flat updateFlat(Long id, FlatUpdateDTO flatUpdateDTO) {
         Flat flat1 = flatRepository.findById(id).orElse(null);
         if (flat1 != null) {
@@ -69,5 +71,4 @@ public class FlatService {
         return utilityPaymentService.getAllUtilityPaymentsByDate(date).stream().filter(payment -> payment.getUtility().getFlat().getId().equals(id)).toList();
     }
 }
-//payment.getUtility().getFlat().getId().equals(id)).toList();
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {useState, useEffect, useCallback} from 'react';
-import {useNavigate, useParams} from 'react-router-dom'; // useLocation удален, т.к. больше не нужен
+import {useNavigate, useParams} from 'react-router-dom';
 import {
     Button,
     TextField,
@@ -12,34 +12,47 @@ import {
     TableRow,
     Paper,
     Checkbox,
-    Typography
+    Typography,
+    Box,
 } from '@mui/material';
 import {DatePicker} from '@mui/x-date-pickers/DatePicker';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
+import dayjs, {Dayjs} from 'dayjs';
 import {
     updateFlat,
     deleteUtility,
     getFlat,
-    getUtilityPaymentsByFlatIdAndDate, checkPayment
-} from './api.ts';
+    getUtilityPaymentsByFlatIdAndDate,
+    checkPayment,
+} from '../api.ts';
 import DeleteIcon from '@mui/icons-material/Delete';
 import InfoIcon from '@mui/icons-material/Info';
 import 'dayjs/locale/ru'; // Import Russian locale
+import {styled} from '@mui/system'; // Import styled
+
+const FlatPageContainer = styled('div')({
+    padding: '20px',
+    maxWidth: '1000px',
+    margin: '0 auto',
+});
+
 
 function FlatPage() {
     const navigate = useNavigate();
     const {id} = useParams();
-    const [flat, setFlat] = useState(null); // location.state больше не используем для initial flat
+    const [flat, setFlat] = useState(null);
     const [utilities, setUtilities] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
     const [editedFlat, setEditedFlat] = useState({
+        id: '',
         name: '',
-        address: ''
+        address: '',
+        userId: ''
     });
     const [selectedDate, setSelectedDate] = useState(dayjs());
     const [paidUtilities, setPaidUtilities] = useState({});
+
 
     const fetchFlatData = useCallback(async () => {
         if (!id) return;
@@ -48,24 +61,26 @@ function FlatPage() {
             const response = await getFlat(id);
             setFlat(response.data);
             setEditedFlat({
+                id: response.data.id,
                 name: response.data.name,
-                address: response.data.address
+                address: response.data.address,
+                userId: response.data.user.id
             });
         } catch (error) {
             console.error('Error fetching flat:', error);
         }
     }, [id]);
 
-    const fetchUtilities = useCallback(async (date) => {
+    const fetchUtilities = useCallback(async (date: Dayjs) => { // Type date as Dayjs
         if (!id) return;
 
         try {
             const date_string = date.format('01.MM.YYYY');
             const resp = await getUtilityPaymentsByFlatIdAndDate(parseInt(id), date_string);
-            const ut_arr = [];
-            const paidStatus = {};
+            const ut_arr: any[] = [];
+            const paidStatus: { [key: number]: boolean } = {};
 
-            resp.data.forEach((payment) => {
+            resp.data.forEach((payment: any) => {
                 ut_arr.push(payment.utility);
                 paidStatus[payment.utility.id] = payment.isPaid || false;
             });
@@ -77,21 +92,31 @@ function FlatPage() {
         }
     }, [id]);
 
+    const handleGoToStats = () => {
+        if (flat?.id) {
+            navigate(`/flat/${flat.id}/stats`);
+        }
+    };
+
+
     useEffect(() => {
         if (id) {
             fetchFlatData();
-            fetchUtilities(selectedDate); // Fetch utilities on component mount and when id changes
+            fetchUtilities(selectedDate);
         }
-    }, [fetchFlatData, fetchUtilities, id, selectedDate]); // selectedDate добавлен в зависимости
+    }, [fetchFlatData, fetchUtilities, id, selectedDate]);
 
     useEffect(() => {
         if (flat) {
             setEditedFlat({
+                id: flat.id,
                 name: flat.name,
-                address: flat.address
+                address: flat.address,
+                userId: flat.user.id
             });
         }
     }, [flat]);
+
 
     const handleEdit = () => {
         setIsEditing(true);
@@ -104,7 +129,8 @@ function FlatPage() {
             const updatedFlat = {
                 ...flat,
                 name: editedFlat.name,
-                address: editedFlat.address
+                address: editedFlat.address,
+                userId: editedFlat.userId
             };
             await updateFlat(flat.id, updatedFlat);
             setFlat(updatedFlat);
@@ -114,7 +140,7 @@ function FlatPage() {
         }
     };
 
-    const handleChange = (e) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => { // Type the event
         const {name, value} = e.target;
         setEditedFlat(prev => ({
             ...prev,
@@ -122,11 +148,11 @@ function FlatPage() {
         }));
     };
 
-    const formatDate = (dateString) => {
+    const formatDate = (dateString: string) => { // Type dateString
         return new Date(dateString).toLocaleDateString('ru-RU');
     };
 
-    const handleCheckboxChange = (utilityId) => {
+    const handleCheckboxChange = (utilityId: number) => { // Type utilityId
         setPaidUtilities((prev) => {
             const newPaid = {...prev};
             newPaid[utilityId] = !prev[utilityId];
@@ -136,21 +162,25 @@ function FlatPage() {
     };
 
     const handleAddUtility = () => {
-        localStorage.setItem('flatId', flat.id);
-        navigate(`/add-utility/${flat.id}`);
+        if (flat?.id) {  // Check for flat.id before navigating
+            localStorage.setItem('flatId', String(flat.id));
+            navigate(`/add-utility/${flat.id}`);
+        }
     };
-
     const handleBack = () => {
         localStorage.removeItem('flatId');
         navigate('/home');
     };
 
-    const handleUtilityDetails = (utility) => {
-        localStorage.setItem('flatId', flat.id);
-        navigate(`/utility/${utility.id}`, {state: {utility}});
+    const handleUtilityDetails = (utility: any) => { // Type utility
+        if (flat?.id) {
+            localStorage.setItem('flatId', String(flat.id));
+            navigate(`/utility/${utility.id}`, {state: {utility}});
+        }
+
     };
 
-    const handleUtilityDelete = async (utilityId) => {
+    const handleUtilityDelete = async (utilityId: number) => { // Type utilityId
         try {
             await deleteUtility(utilityId);
             fetchUtilities(selectedDate);
@@ -158,27 +188,31 @@ function FlatPage() {
             console.error('Error deleting utility:', error);
         }
     };
-    const handleDateChange = (newValue) => {
-        setSelectedDate(newValue);
-        fetchUtilities(newValue); // Заново запрашиваем данные при смене даты
+    const handleDateChange = (newValue: Dayjs | null) => { // Type newValue
+        if (newValue) {
+            setSelectedDate(newValue);
+            fetchUtilities(newValue);
+        }
+
     };
 
     const unpaidCount = utilities.filter((u) => !paidUtilities[u.id]).length;
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">
-            <div style={{padding: '20px'}}>
+            <FlatPageContainer>
                 <h1>Информация о квартире</h1>
 
+                {/* Edit Flat Form */}
                 {isEditing ? (
-                    <div style={{marginBottom: '20px'}}>
+                    <Box mb={3}>
                         <TextField
                             label="Название"
                             name="name"
                             value={editedFlat.name}
                             onChange={handleChange}
                             fullWidth
-                            style={{marginBottom: '10px'}}
+                            margin="normal"
                         />
                         <TextField
                             label="Адрес"
@@ -186,13 +220,13 @@ function FlatPage() {
                             value={editedFlat.address}
                             onChange={handleChange}
                             fullWidth
-                            style={{marginBottom: '10px'}}
+                            margin="normal"
                         />
                         <Button
                             variant="contained"
                             color="primary"
                             onClick={handleSave}
-                            style={{marginRight: '10px'}}
+                            sx={{mr: 2}}
                         >
                             Сохранить
                         </Button>
@@ -203,30 +237,34 @@ function FlatPage() {
                         >
                             Отмена
                         </Button>
-                    </div>
+                    </Box>
                 ) : (
-                    <div style={{marginBottom: '20px'}}>
-                        <h2>Название: {flat?.name}</h2>
-                        <h3>Адрес: {flat?.address}</h3>
-                        <Button variant="outlined" onClick={handleEdit} style={{marginTop: '10px'}}>
+                    <Box mb={3}>
+                        <Typography variant="h6">Название: {flat?.name}</Typography>
+                        <Typography variant="h6">Адрес: {flat?.address}</Typography>
+                        <Button variant="outlined" onClick={handleEdit} sx={{mt: 1}}>
                             Редактировать
                         </Button>
-                    </div>
+                    </Box>
                 )}
 
-                <DatePicker
-                    views={['year', 'month']}
-                    value={selectedDate}
-                    onChange={handleDateChange}
-                />
+                {/* Date Picker for Utilities */}
+                <Box mb={3}>
+                    <DatePicker
+                        views={['year', 'month']}
+                        value={selectedDate}
+                        onChange={handleDateChange}
+                    />
+                </Box>
 
-                <Typography variant="h6" style={{margin: '20px 0'}}>
+                {/* Utilities Table */}
+                <Typography variant="h6" sx={{mb: 2}}>
                     {unpaidCount === 0
                         ? 'Все услуги оплачены в этом месяце'
                         : `Количество услуг к оплате: ${unpaidCount}`}
                 </Typography>
 
-                <TableContainer component={Paper}>
+                <TableContainer component={Paper} sx={{mb: 3}}>
                     <Table>
                         <TableHead>
                             <TableRow>
@@ -242,7 +280,7 @@ function FlatPage() {
                             {utilities.map((utility) => (
                                 <TableRow
                                     key={utility.id}
-                                    style={{
+                                    sx={{
                                         backgroundColor: paidUtilities[utility.id]
                                             ? '#d0f0c0'
                                             : '#f8d7da'
@@ -254,14 +292,14 @@ function FlatPage() {
                                     <TableCell>{formatDate(utility.date)}</TableCell>
                                     <TableCell>
                                         <Checkbox
-                                            checked={paidUtilities[utility.id]}
+                                            checked={paidUtilities[utility.id] || false}
                                             onChange={() => handleCheckboxChange(utility.id)}
                                         />
                                     </TableCell>
                                     <TableCell>
                                         <Button
                                             onClick={() => handleUtilityDetails(utility)}
-                                            style={{marginRight: '8px'}}
+                                            sx={{mr: 1}}
                                         >
                                             <InfoIcon/>
                                         </Button>
@@ -274,14 +312,23 @@ function FlatPage() {
                         </TableBody>
                     </Table>
                 </TableContainer>
-                <Button variant="contained" color="primary" onClick={handleAddUtility} style={{marginTop: '20px'}}>
+
+                <Button variant="contained" color="primary" onClick={handleAddUtility} sx={{mb: 2}}>
                     Добавить услугу
                 </Button>
-                <Button variant="outlined" color="primary" onClick={handleBack}
-                        style={{marginTop: '20px', marginLeft: '10px'}}>
+                <Button variant="outlined" color="primary" onClick={handleBack} sx={{ml: 2, mb: 2}}>
                     Назад
                 </Button>
-            </div>
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleGoToStats}
+                    sx={{ml: 2, mb: 2}}
+                >
+                    Статистика
+                </Button>
+            </FlatPageContainer>
+
         </LocalizationProvider>
     );
 }

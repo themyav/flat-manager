@@ -20,21 +20,24 @@ public class FlatController {
     @Autowired
     private final FlatService flatService;
 
+
     public FlatController(FlatService flatService) {
         this.flatService = flatService;
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public List<Flat> getAllFlats() {
+    public List<Flat> getFlats() {
         return flatService.getAllFlats();
     }
+
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Flat createFlat(@RequestBody Flat flat) {
         return flatService.createFlat(flat);
     }
+
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)

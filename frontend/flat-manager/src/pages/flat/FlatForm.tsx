@@ -2,7 +2,7 @@ import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
-import { addFlat } from './api.ts';
+import { addFlat } from '../api.ts';
 import { useState, useEffect } from 'react';
 
 function FlatForm() {

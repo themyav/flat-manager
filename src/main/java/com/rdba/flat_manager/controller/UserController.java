@@ -31,16 +31,21 @@ public class UserController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public User registerUser(@RequestBody User user) {
-        return userService.createUser(user);
+    public ResponseEntity<?> registerUser(@RequestBody User user) {
+        User created = userService.createUser(user);
+        if (created != null) {
+            return ResponseEntity.ok(created);
+
+        } else
+            return ResponseEntity.badRequest().body("Юзер с такими данным уже существует. Логин, почта и телефон должны быть уникальными");
     }
 
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody UserDTO userDTO) {
         Optional<User> user = userService.loginUser(userDTO.getUsername(), userDTO.getPassword());
         if (user.isPresent()) {
-            return ResponseEntity.ok("Login successful");
-        } else return ResponseEntity.badRequest().body("Invalid credentials");
+            return ResponseEntity.ok("Регистрация успешна");
+        } else return ResponseEntity.badRequest().body("Некорректные данные");
     }
 
     @GetMapping("/{username}")

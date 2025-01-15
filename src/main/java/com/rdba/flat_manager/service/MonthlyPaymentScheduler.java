@@ -16,7 +16,6 @@ public class MonthlyPaymentScheduler {
 
 
     @Scheduled(cron = "0 0 0 1 * ?")
-//    @Scheduled(cron = "0 * * * * ?")
     public void scheduleMonthlyUtilityPayments() {
         utilityPaymentService.createMonthlyUtilityPayments();
         System.out.println("Автоматическое создание платежей выполнено: " + LocalDateTime.now());

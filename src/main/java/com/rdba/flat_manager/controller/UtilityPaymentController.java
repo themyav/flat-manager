@@ -2,6 +2,7 @@ package com.rdba.flat_manager.controller;
 
 import com.rdba.flat_manager.entity.UtilityPayment;
 import com.rdba.flat_manager.service.UtilityPaymentService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/utility-payments")
+@Tag(name = "Utility payment API", description = "Контроллер управления оплатой услуг")
 public class UtilityPaymentController {
     private final UtilityPaymentService utilityPaymentService;
 

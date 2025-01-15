@@ -10,6 +10,7 @@ import com.rdba.flat_manager.repo.FlatRepository;
 import com.rdba.flat_manager.repo.UtilityPaymentRepository;
 import com.rdba.flat_manager.repo.UtilityRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -32,6 +33,7 @@ public class UtilityService {
         return utilityRepository.findAll();
     }
 
+    @Transactional
     public Utility createUtility(Utility utilityDTO) {
         Utility utility = utilityRepository.save(utilityDTO);
 
@@ -44,7 +46,9 @@ public class UtilityService {
         return utility;
     }
 
+    @Transactional
     public void deleteUtilityById(Long id) {
+        utilityPaymentRepository.deleteAllByUtilityId(id);
         utilityRepository.deleteById(id);
     }
 
@@ -53,6 +57,7 @@ public class UtilityService {
     }
 
 
+    @Transactional
     public Utility updateUtility(Long id, UtilityUpdateDTO utilityUpdateDTO) {
         Utility utility = utilityRepository.findById(id).orElse(null);
         if (utility != null) {
@@ -76,7 +81,6 @@ public class UtilityService {
         if (date == null || date.isEmpty()) {
             throw new IllegalArgumentException("Дата не может быть пустой");
         }
-        // Формат строки даты, например: "2024-01-11T15:30:00+03:00"
         DateTimeFormatter formatter = DateTimeFormatter.ISO_ZONED_DATE_TIME;
         return ZonedDateTime.parse(date, formatter);
     }

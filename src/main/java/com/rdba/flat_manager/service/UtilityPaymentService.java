@@ -5,6 +5,7 @@ import com.rdba.flat_manager.entity.UtilityPayment;
 import com.rdba.flat_manager.repo.UtilityPaymentRepository;
 import com.rdba.flat_manager.repo.UtilityRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.ArrayList;
@@ -49,10 +50,6 @@ public class UtilityPaymentService {
         return utilityPaymentRepository.save(utility);
     }
 
-    public void deleteUtilityPayment(UtilityPayment utility) {
-        utilityPaymentRepository.delete(utility);
-    }
-
     public void deleteUtilityPaymentById(Long id) {
         utilityPaymentRepository.deleteById(id);
     }
@@ -69,6 +66,7 @@ public class UtilityPaymentService {
         return utilityPaymentRepository.save(utilityPayment);
     }
 
+    @Transactional
     public void createMonthlyUtilityPayments() {
         List<Utility> utilities = utilityRepository.findAll();
         List<UtilityPayment> payments = new ArrayList<>();
