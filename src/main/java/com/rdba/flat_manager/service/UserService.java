@@ -8,6 +8,7 @@ import com.rdba.flat_manager.exception.UserNotFound;
 import com.rdba.flat_manager.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +35,7 @@ public class UserService {
         } else return null;
     }
 
+    @Transactional
     public User updateUser(Long id, User user) {
         User user1 = userRepository.findById(id).orElse(null);
         if (user1 != null) {

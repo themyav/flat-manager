@@ -5,9 +5,11 @@ import com.rdba.flat_manager.entity.Flat;
 import com.rdba.flat_manager.entity.Utility;
 import com.rdba.flat_manager.entity.UtilityPayment;
 import com.rdba.flat_manager.service.FlatService;
+import com.rdba.flat_manager.service.ReminderService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.Optional;
 public class FlatController {
     @Autowired
     private final FlatService flatService;
+
 
     public FlatController(FlatService flatService) {
         this.flatService = flatService;
@@ -36,6 +39,7 @@ public class FlatController {
     public Flat createFlat(@RequestBody Flat flat) {
         return flatService.createFlat(flat);
     }
+
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
